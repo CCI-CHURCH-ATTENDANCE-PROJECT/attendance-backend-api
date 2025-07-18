@@ -1,0 +1,285 @@
+package service
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"time"
+
+	"church-attendance-api/internal/config"
+	"church-attendance-api/internal/dto"
+	"church-attendance-api/internal/models"
+	"church-attendance-api/internal/repository"
+	"church-attendance-api/internal/utils"
+)
+
+type AuthService struct {
+	cfg              *config.Config
+	userRepo         *repository.UserRepository
+	refreshTokenRepo *repository.RefreshTokenRepository
+}
+
+func NewAuthService(cfg *config.Config, userRepo *repository.UserRepository, refreshTokenRepo *repository.RefreshTokenRepository) *AuthService {
+	return &AuthService{
+		cfg:              cfg,
+		userRepo:         userRepo,
+		refreshTokenRepo: refreshTokenRepo,
+	}
+}
+
+func (s *AuthService) BasicRegister(ctx context.Context, req *dto.BasicRegisterRequest) (*dto.BasicRegisterResponse, error) {
+	// Check if user already exists
+	existingUser, err := s.userRepo.GetByEmail(ctx, req.Email)
+	if err != nil {
+		return nil, fmt.Errorf("failed to check existing user: %w", err)
+	}
+	if existingUser != nil {
+		return nil, errors.New("user already exists with this email")
+	}
+
+	// Validate password strength
+	if !utils.IsValidPassword(req.Password) {
+		return nil, errors.New("password must be at least 8 characters long and contain uppercase, lowercase, and number")
+	}
+
+	// Hash password
+	hashedPassword, err := utils.HashPassword(req.Password)
+	if err != nil {
+		return nil, fmt.Errorf("failed to hash password: %w", err)
+	}
+
+	// Generate user ID
+	userID, err := utils.GenerateUserID()
+	if err != nil {
+		return nil, fmt.Errorf("failed to generate user ID: %w", err)
+	}
+
+	// Create user
+	user := &models.User{
+		UserID:      userID,
+		Email:       req.Email,
+		Password:    hashedPassword,
+		Member:      false,
+		Visitor:     true,
+		DateJoined:  time.Now(),
+		DateUpdated: time.Now(),
+	}
+
+	err = s.userRepo.Create(ctx, user)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create user: %w", err)
+	}
+
+	return &dto.BasicRegisterResponse{
+		UserID:    user.UserID,
+		Email:     user.Email,
+		CreatedAt: user.DateJoined,
+	}, nil
+}
+
+func (s *AuthService) CompleteRegister(ctx context.Context, req *dto.CompleteRegisterRequest) (*dto.BasicRegisterResponse, error) {
+	// Check if user already exists
+	existingUser, err := s.userRepo.GetByEmail(ctx, req.Email)
+	if err != nil {
+		return nil, fmt.Errorf("failed to check existing user: %w", err)
+	}
+	if existingUser != nil {
+		return nil, errors.New("user already exists with this email")
+	}
+
+	// Validate password strength
+	if !utils.IsValidPassword(req.Password) {
+		return nil, errors.New("password must be at least 8 characters long and contain uppercase, lowercase, and number")
+	}
+
+	// Hash password
+	hashedPassword, err := utils.HashPassword(req.Password)
+	if err != nil {
+		return nil, fmt.Errorf("failed to hash password: %w", err)
+	}
+
+	// Generate user ID
+	userID, err := utils.GenerateUserID()
+	if err != nil {
+		return nil, fmt.Errorf("failed to generate user ID: %w", err)
+	}
+
+	//Generate QRCode image and QRCode token for the user and save it in the QRCodeTonken fields
+
+	//A logic to decide if the user will have admin set to true or false
+
+	// Create user with complete information
+	user := &models.User{
+		UserID:                       userID,
+		Email:                        req.Email,
+		Password:                     hashedPassword,
+		FirstName:                    req.FirstName,
+		LastName:                     req.LastName,
+		Bio:                          req.Bio,
+		DateOfBirth:                  req.DateOfBirth,
+		Gender:                       req.Gender,
+		Member:                       req.Member,
+		Visitor:                      req.Visitor,
+		Usher:                        req.Usher,
+		Admin:                        req.Admin,
+		UserWorkDepartment:           req.UserWorkDepartment,
+		DateJoinedChurch:             req.DateJoinedChurch,
+		FamilyHead:                   req.FamilyHead,
+		UserCampus:                   req.UserCampus,
+		PhoneNumber:                  req.PhoneNumber,
+		InstagramHandle:              req.InstagramHandle,
+		FamilyMemberID:               req.FamilyMemberID,
+		Profession:                   req.Profession,
+		UserHouseAddress:             req.UserHouseAddress,
+		CampusState:                  req.CampusState,
+		CampusCountry:                req.CampusCountry,
+		EmergencyContactName:         req.EmergencyContactName,
+		EmergencyContactPhone:        req.EmergencyContactPhone,
+		EmergencyContactEmail:        req.EmergencyContactEmail,
+		EmergencyContactRelationship: req.EmergencyContactRelationship,
+		DateJoined:                   time.Now(),
+		DateUpdated:                  time.Now(),
+	}
+
+	err = s.userRepo.Create(ctx, user)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create user: %w", err)
+	}
+
+	return &dto.BasicRegisterResponse{
+		UserID:    user.UserID,
+		Email:     user.Email,
+		CreatedAt: user.DateJoined,
+	}, nil
+}
+
+func (s *AuthService) Login(ctx context.Context, req *dto.LoginRequest) (*dto.LoginResponse, error) {
+	// Get user by email
+	user, err := s.userRepo.GetByEmail(ctx, req.Email)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get user: %w", err)
+	}
+	if user == nil {
+		return nil, errors.New("invalid email or password")
+	}
+
+	// Check password
+	if !utils.CheckPasswordHash(req.Password, user.Password) {
+		return nil, errors.New("invalid email or password")
+	}
+
+	// Generate JWT tokens
+	accessToken, err := utils.GenerateJWT(user.UserID, user.Email, user.Admin, s.cfg.JWTSecret, s.cfg.JWTAccessExpiry)
+	if err != nil {
+		return nil, fmt.Errorf("failed to generate access token: %w", err)
+	}
+
+	refreshToken, err := utils.GenerateRandomToken(32)
+	if err != nil {
+		return nil, fmt.Errorf("failed to generate refresh token: %w", err)
+	}
+
+	// Store refresh token
+	refreshTokenModel := &models.RefreshToken{
+		UserID:    user.ID,
+		Token:     refreshToken,
+		ExpiresAt: time.Now().Add(s.cfg.JWTRefreshExpiry),
+	}
+
+	err = s.refreshTokenRepo.Create(ctx, refreshTokenModel)
+	if err != nil {
+		return nil, fmt.Errorf("failed to store refresh token: %w", err)
+	}
+
+	return &dto.LoginResponse{
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+		User: dto.UserSummary{
+			UserID:    user.UserID,
+			FirstName: user.FirstName,
+			LastName:  user.LastName,
+			Email:     user.Email,
+		},
+	}, nil
+}
+
+func (s *AuthService) RefreshToken(ctx context.Context, req *dto.RefreshTokenRequest) (*dto.TokenResponse, error) {
+	// Get refresh token
+	refreshToken, err := s.refreshTokenRepo.GetByToken(ctx, req.RefreshToken)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get refresh token: %w", err)
+	}
+	if refreshToken == nil {
+		return nil, errors.New("invalid refresh token")
+	}
+
+	// Check if token is expired
+	if time.Now().After(refreshToken.ExpiresAt) {
+		// Delete expired token
+		s.refreshTokenRepo.DeleteByToken(ctx, req.RefreshToken)
+		return nil, errors.New("refresh token has expired")
+	}
+
+	// Get user
+	user, err := s.userRepo.GetByID(ctx, refreshToken.UserID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get user: %w", err)
+	}
+	if user == nil {
+		return nil, errors.New("user not found")
+	}
+
+	// Generate new access token
+	accessToken, err := utils.GenerateJWT(user.UserID, user.Email, user.Admin, s.cfg.JWTSecret, s.cfg.JWTAccessExpiry)
+	if err != nil {
+		return nil, fmt.Errorf("failed to generate access token: %w", err)
+	}
+
+	// Generate new refresh token
+	newRefreshToken, err := utils.GenerateRandomToken(32)
+	if err != nil {
+		return nil, fmt.Errorf("failed to generate new refresh token: %w", err)
+	}
+
+	// Delete old refresh token
+	err = s.refreshTokenRepo.DeleteByToken(ctx, req.RefreshToken)
+	if err != nil {
+		return nil, fmt.Errorf("failed to delete old refresh token: %w", err)
+	}
+
+	// Store new refresh token
+	newRefreshTokenModel := &models.RefreshToken{
+		UserID:    user.ID,
+		Token:     newRefreshToken,
+		ExpiresAt: time.Now().Add(s.cfg.JWTRefreshExpiry),
+	}
+
+	err = s.refreshTokenRepo.Create(ctx, newRefreshTokenModel)
+	if err != nil {
+		return nil, fmt.Errorf("failed to store new refresh token: %w", err)
+	}
+
+	return &dto.TokenResponse{
+		AccessToken:  accessToken,
+		RefreshToken: newRefreshToken,
+	}, nil
+}
+
+func (s *AuthService) Logout(ctx context.Context, userID string) error {
+	// Get user
+	user, err := s.userRepo.GetByUserID(ctx, userID)
+	if err != nil {
+		return fmt.Errorf("failed to get user: %w", err)
+	}
+	if user == nil {
+		return errors.New("user not found")
+	}
+
+	// Delete all refresh tokens for user
+	err = s.refreshTokenRepo.DeleteByUserID(ctx, user.ID)
+	if err != nil {
+		return fmt.Errorf("failed to delete refresh tokens: %w", err)
+	}
+
+	return nil
+}
