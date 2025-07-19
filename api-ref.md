@@ -1,7 +1,7 @@
 # Church Attendance Management System API Reference
 
 **Base URL:**  
-`http://localhost:8080/api/v1`
+  `http://localhost:8080/api/v1`
 
 ---
 
@@ -13,8 +13,8 @@
 - **Body:**
   | Field                            | Type   | Required | Description                                 |
   |----------------------------------|--------|----------|---------------------------------------------|
-  | email                           | string | Yes      | User's email address (must be unique)        |
-  | user_password                   | string | Yes      | Password (min 8 chars,  strong recommended)  |
+  | email                            | string | Yes      | User's email address (must be unique)       |
+  | user_password                    | string | Yes      | Password (min 8 chars,  strong recommended) |
 
 - **Sample Request**
   ```javascript
@@ -105,7 +105,7 @@
     console.log(data);
 
 - **Sample Response**
-    ```json
+  ```json
     {
       "success": true,
       "message": "User registered successfully",
@@ -114,9 +114,9 @@
         "email": "yusuf@gmail.com",
         "created_at": "2025-07-12T11:12:34.738426+01:00"
       }
-    }```
+    }
 
-`###I still need to Check the complete register endpoint for some fields that are not saving properly? Also check and standardise the way family member list should be stored for a family head user`
+### I still need to Check the complete register endpoint for some fields that are not saving properly? Also check and standardise the way family member list should be stored for a family head user
 
 
 
@@ -129,6 +129,46 @@
   | email         | string | Yes      | User's email address  |
   | user_password | string | Yes      | User's password       |
 
+- **Sample Request:**
+  ```javascript
+  let headersList = {
+    "Accept": "*/*",
+    "User-Agent": "Local Client ",
+    "Content-Type": "application/json"
+    }
+
+    let bodyContent = JSON.stringify({
+      "Email": "yusuf@gmail.com",
+      "Password": "Graphene@work3"
+    });
+
+    let response = await fetch("http://localhost:8080/api/v1/auth/login", { 
+      method: "POST",
+      body: bodyContent,
+      headers: headersList
+    });
+
+    let data = await response.text();
+    console.log(data);
+
+- **Sample REspons:**
+  ```json
+    {
+      "success": true,
+      "message": "Login successful",
+      "data": {
+        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTg5NDg5IiwiZW1haWwiOiJ5dXN1ZkBnbWFpbC5jb20iLCJhZG1pbiI6dHJ1ZSwiaXNzIjoiY2h1cmNoLWF0dGVuZGFuY2UtYXBpIiwiZXhwIjoxNzUyOTIwMDc1LCJpYXQiOjE3NTI5MTkxNzV9.s4fiE2IjZwMQmeN4Q5DiQn10b4ugRnWRJc7eOcEsvnY",
+        "refresh_token": "0skyZk8anEz8xewtj4qNneWd8xQd09jvNA2RWVuzqr4=",
+        "user": {
+          "user_id": "CCIMRB-89489",
+          "fname": "Seun",
+          "lname": "Yusuf",
+          "email": "yusuf@gmail.com"
+        }
+      }
+    }
+
+
 ### Refresh Token
 - **POST** `/auth/refresh`
 - **Headers:** `Content-Type: application/json`
@@ -137,6 +177,37 @@
   |-------------|--------|----------|---------------------|
   | refresh_token | string | Yes    | JWT refresh token   |
 
+- **Sample Request:**
+  ```javascript
+      let headersList = {
+      "Accept": "*/*",
+      "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+      "Content-Type": "application/json"
+      }
+
+      let bodyContent = JSON.stringify({
+      "refresh_token":"0skyZk8anEz8xewtj4qNneWd8xQd09jvNA2RWVuzqr4="
+      });
+
+      let response = await fetch("http://localhost:8080/api/v1/auth/refresh", { 
+        method: "POST",
+        body: bodyContent,
+        headers: headersList
+      });
+
+      let data = await response.text();
+      console.log(data);
+- **Sample Response:**
+  ```json
+    {
+      "success": true,
+      "data": {
+        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTg5NDg5IiwiZW1haWwiOiJ5dXN1ZkBnbWFpbC5jb20iLCJhZG1pbiI6dHJ1ZSwiaXNzIjoiY2h1cmNoLWF0dGVuZGFuY2UtYXBpIiwiZXhwIjoxNzUyOTIwMzgwLCJpYXQiOjE3NTI5MTk0ODB9.DZvlKG6Jymfp3sFOXIWvmk6bVCykv4K42IpIOvlsjnM",
+        "refresh_token": "y0CarV-bt35DDMm3QOZqWqlmuRFDILp4VGJh_fHjXto="
+      }
+    }
+
+
 ### Logout
 - **POST** `/logout`
 - **Headers:**  
@@ -144,25 +215,295 @@
   - `Authorization: Bearer <JWT_ACCESS_TOKEN>`
   - Just pass the bearer token as authorisation, and the user will be logged out succesfully
 
----
+- **Sample Request:**
+  ```javascript
+    let headersList = {
+    "Accept": "*/*",
+    "User-Agent": "Local Client",
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTg5NDg5IiwiZW1haWwiOiJ5dXN1ZkBnbWFpbC5jb20iLCJhZG1pbiI6dHJ1ZSwiaXNzIjoiY2h1cmNoLWF0dGVuZGFuY2UtYXBpIiwiZXhwIjoxNzUyOTIwMzgwLCJpYXQiOjE3NTI5MTk0ODB9.DZvlKG6Jymfp3sFOXIWvmk6bVCykv4K42IpIOvlsjnM"
+    }
+
+    let response = await fetch("http://localhost:8080/api/v1/logout", { 
+      method: "POST",
+      headers: headersList
+    });
+
+    let data = await response.text();
+    console.log(data);
+
+
+- **Sample Response:**
+  ```json
+    {
+    "success": true,
+    "message": "Logged out successfully"
+  }
+
+-----------------------------------
 
 ## Users
 
 ### Get All Users
 - **GET** `/users`
 - **Headers:** `Authorization: Bearer <JWT_ACCESS_TOKEN>`
+- **Sample Request:**
+  ```javascript
+    let headersList = {
+    "Accept": "*/*",
+    "User-Agent": "Local Client",
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTg5NTI5MTk0ODB9.DZvlKG6Jymfp3sFOXIWvmk6bVCykv4K42IpIOvlsjnM"
+    }
+
+    let response = await fetch("http://localhost:8080/api/v1/users", { 
+      method: "GET",
+      headers: headersList
+    });
+
+    let data = await response.text();
+    console.log(data);
+
+
+
+- **Sample Response:**
+  ```json
+    {
+      "success": true,
+      "data": {
+        "data": [
+          {
+            "id": "68723512949fcaa17c3b88e3",
+            "user_id": "CCIMRB-89489",
+            "fname": "Seun",
+            "lname": "Yusuf",
+            "email": "yusuf@gmail.com",
+            "bio": "This is a complete registration for Seun test",
+            "date_of_birth": "",
+            "gender": "Male",
+            "member": true,
+            "visitor": false,
+            "usher": false,
+            "user_work_department": null,
+            "date_joined_church": "",
+            "qr_code_token": "",
+            "qr_code_image": "",
+            "family_head": false,
+            "user_campus": "",
+            "campus_state": "",
+            "campus_country": "",
+            "profession": "Painter",
+            "user_house_address": "",
+            "phone_number": "",
+            "instagram_handle": "",
+            "family_member_id": 0,
+            "date_joined": "2025-07-12T10:12:34.738Z",
+            "date_updated": "2025-07-12T10:12:34.738Z",
+            "role": null,
+            "emergency_contact_name": "",
+            "emergency_contact_phone": "",
+            "emergency_contact_email": "",
+            "emergency_contact_relationship": ""
+          },
+          {
+            "id": "687231681352d526740a202d",
+            "user_id": "CCIMRB-32527",
+            "fname": "",
+            "lname": "",
+            "email": "seun@gmail.com",
+            "bio": "",
+            "date_of_birth": "",
+            "gender": "",
+            "member": false,
+            "visitor": true,
+            "usher": false,
+            "user_work_department": null,
+            "date_joined_church": "",
+            "qr_code_token": "",
+            "qr_code_image": "",
+            "family_head": false,
+            "user_campus": "",
+            "campus_state": "",
+            "campus_country": "",
+            "profession": "",
+            "user_house_address": "",
+            "phone_number": "",
+            "instagram_handle": "",
+            "family_member_id": 0,
+            "date_joined": "2025-07-12T09:56:56.552Z",
+            "date_updated": "2025-07-12T09:56:56.552Z",
+            "role": null,
+            "emergency_contact_name": "",
+            "emergency_contact_phone": "",
+            "emergency_contact_email": "",
+            "emergency_contact_relationship": ""
+          },
+          {
+            "id": "6870fd136a3c8ff7362d535b",
+            "user_id": "CCIMRB-53540",
+            "fname": "Testingagaina",
+            "lname": "Withmoretocome",
+            "email": "john.dossse@example.com",
+            "bio": "This is the second complete registration test",
+            "date_of_birth": "",
+            "gender": "Female",
+            "member": true,
+            "visitor": false,
+            "usher": false,
+            "user_work_department": null,
+            "date_joined_church": "",
+            "qr_code_token": "",
+            "qr_code_image": "",
+            "family_head": false,
+            "user_campus": "",
+            "campus_state": "",
+            "campus_country": "",
+            "profession": "Painter",
+            "user_house_address": "",
+            "phone_number": "",
+            "instagram_handle": "",
+            "family_member_id": 0,
+            "date_joined": "2025-07-11T12:01:23.523Z",
+            "date_updated": "2025-07-11T12:01:23.523Z",
+            "role": null,
+            "emergency_contact_name": "",
+            "emergency_contact_phone": "",
+            "emergency_contact_email": "",
+            "emergency_contact_relationship": ""
+          },
+            . . . .,
+          {
+            "id": "686d55975ae6ebb6d9e2cd65",
+            "user_id": "CCIMRB-70698",
+            "fname": "",
+            "lname": "",
+            "email": "john.doe@example.com",
+            "bio": "",
+            "date_of_birth": "",
+            "gender": "",
+            "member": false,
+            "visitor": true,
+            "usher": false,
+            "user_work_department": null,
+            "date_joined_church": "",
+            "qr_code_token": "",
+            "qr_code_image": "",
+            "family_head": true,
+            "user_campus": "",
+            "campus_state": "",
+            "campus_country": "",
+            "profession": "",
+            "user_house_address": "",
+            "phone_number": "",
+            "instagram_handle": "",
+            "family_member_id": 0,
+            "date_joined": "2025-07-08T17:29:59.341Z",
+            "date_updated": "2025-07-12T09:21:14.903Z",
+            "role": null,
+            "emergency_contact_name": "",
+            "emergency_contact_phone": "",
+            "emergency_contact_email": "",
+            "emergency_contact_relationship": ""
+          }
+        ],
+        "pagination": {
+          "page": 1,
+          "limit": 10,
+          "total": 6,
+          "total_pages": 1
+        }
+      }
+    }
+
+
+
 
 ### Search Users
 - **GET** `/users/search?query=<search>`
 - **Headers:** `Authorization: Bearer <JWT_ACCESS_TOKEN>`
 
+- **Sample Request:**
+  ```javascript
+    let headersList = {
+    "Accept": "*/*",
+    "User-Agent": "Local Client",
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTg5NDg5Tk0ODB9.DZvlKG6Jymfp3sFOXIWvmk6bVCykv4K42IpIOvlsjnM"
+    }
+
+    let response = await fetch("http://localhost:8080/api/v1/users/search?q=CCIMRB-5354", { 
+      method: "GET",
+      headers: headersList
+    });
+
+    let data = await response.text();
+    console.log(data);
+
+- **Sample Response:**
+  ```json
+    {
+      "success": true,
+      "data": {
+        "data": [
+          {
+            "user_id": "CCIMRB-53540",
+            "fname": "Testingagaina",
+            "lname": "Withmoretocome",
+            "email": "john.dossse@example.com"
+          }
+        ],
+        "pagination": {
+          "page": 1,
+          "limit": 10,
+          "total": 1,
+          "total_pages": 1
+        }
+      }
+    }
+
+
 ### Filter Users
 - **GET** `/users/filter?role=<role>&member=<bool>`
 - **Headers:** `Authorization: Bearer <JWT_ACCESS_TOKEN>`
 
-filter using any field and value
+- **Sample Request:**
+  ```javascript
+    let headersList = {
+    "Accept": "*/*",
+    "User-Agent": "Local Client",
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLT3NTI5MjA1MjB9.NanXZwoB6Ad6T20Kwi8ua1TO79PlK77F68cVIdsKcWw"
+    }
 
----
+    let response = await fetch("http://localhost:8080/api/v1/users/filter?field=family_head&value=true", { 
+      method: "GET",
+      headers: headersList
+    });
+
+    let data = await response.text();
+    console.log(data);
+
+- **Sample Respons:**
+  ```json
+    {
+      "success": true,
+      "data": {
+        "data": [
+          {
+            "user_id": "CCIMRB-70698",
+            "fname": "Kora",
+            "lname": "Ziporah",
+            "email": "john.doe@example.com"
+          }
+        ],
+        "pagination": {
+          "page": 1,
+          "limit": 10,
+          "total": 1,
+          "total_pages": 1
+        }
+      }
+    }
+
+`filter using any field and value`
+
+-----------------------------------------------
 
 ## Attendance
 
@@ -174,6 +515,45 @@ filter using any field and value
   |-------------------------|--------|----------|-----------------------------------|
   | user_id                 | string | Yes      | User's unique ID                  |
 
+- **Sample Request:**
+  ```javascript
+    let headersList = {
+    "Accept": "*/*",
+    "User-Agent": "Local Client",
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTg55MjA1MjB9.NanXZwoB6Ad6T20Kwi8ua1TO79PlK77F68cVIdsKcWw",
+    "Content-Type": "application/json"
+    }
+
+    let bodyContent = JSON.stringify({
+      "user_id": "CCIMRB-70698"
+    });
+
+    let response = await fetch("http://localhost:8080/api/v1/attendance", { 
+      method: "POST",
+      body: bodyContent,
+      headers: headersList
+    });
+
+    let data = await response.text();
+    console.log(data);
+
+
+- **Sample Response:**
+  ```json
+    {
+      "success": true,
+      "message": "Attendance recorded successfully",
+      "data": {
+        "id": "687b725e2cf4e9a209cd4ee8",
+        "user_id": "CCIMRB-70698",
+        "date_time_of_attendance": "2025-07-19T11:24:30.719489+01:00",
+        "qrcode_based_checkin": false,
+        "late": true,
+        "manual_checkin": true,
+        "visitor": false,
+        "member": false
+      }
+    }
 
 ### QR Check-in
 - **POST** `/attendance/qr-checkin`
@@ -203,7 +583,7 @@ filter using any field and value
       });
 
       let data = await response.text();
-      console.log(data);```
+      console.log(data);
 
 - **Sample Response**
   ```json
@@ -220,7 +600,7 @@ filter using any field and value
           "visitor": false,
           "member": false
         }
-      }```
+      }
 
 
 
@@ -229,6 +609,56 @@ filter using any field and value
 ### Attendance History
 - **GET** `/attendance/history`
 - **Headers:** `Authorization: Bearer <JWT_ACCESS_TOKEN>`
+- **Sample Request:**
+  ```javascript
+      let headersList = {
+      "Accept": "*/*",
+      "User-Agent": "Local Client",
+      "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTJpYXQiOjE3NTI5MjA4NDB9.WfzZwyRLxaEVccAw_3AmEPvrRG1N0Ztt8_kHZLt1wOc"
+      }
+
+      let response = await fetch("http://localhost:8080/api/v1/attendance/history", { 
+        method: "GET",
+        headers: headersList
+      });
+
+      let data = await response.text();
+      console.log(data);
+
+
+- **Sample Response:**
+  ```json
+    {
+      "success": true,
+      "data": {
+        "data": [
+          {
+            "date": "2025-07-19",
+            "members": 9,
+            "visitors": 3,
+            "total_attendance": 12
+          },
+          {
+            "date": "2025-07-12",
+            "members": 3,
+            "visitors": 0,
+            "total_attendance": 3
+          },
+          {
+            "date": "2025-07-11",
+            "members": 4,
+            "visitors": 1,
+            "total_attendance": 5
+          }
+        ],
+        "pagination": {
+          "page": 1,
+          "limit": 10,
+          "total": 20,
+          "total_pages": 1
+        }
+      }
+    }
 
 ### Attendance Analytics
 - **GET** `/attendance/analytics?date=<datetime>`
@@ -239,6 +669,35 @@ filter using any field and value
   |-------|-------|-----------|---------------------------------------------------------------------  |
   | date  | date  | yes       | This is the date range that the analytics data should be spooled for  |
 
+- **Sample Request:**
+  ```javascript
+    let headersList = {
+    "Accept": "*/*",
+    "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTg5NDg5IiwiZW1haWwiOiJ5dXN1ZkBnbWFpbC5jb20iLCJhZG1pbiI6dHJ1ZSwiaXNzIjoiY2h1cmNoLWF0dGVuZGFuY2UtYXBpIiwiZXhwIjoxNzUyOTIxNzQwLCJpYXQiOjE3NTI5MjA4NDB9.WfzZwyRLxaEVccAw_3AmEPvrRG1N0Ztt8_kHZLt1wOc"
+    }
+
+    let response = await fetch("http://localhost:8080/api/v1/attendance/analytics?date=2025-07-19", { 
+      method: "GET",
+      headers: headersList
+    });
+
+    let data = await response.text();
+    console.log(data);
+
+- **Sample Response:**
+  ```json
+    {
+      "success": true,
+      "data": {
+        "total_active_users_all_time": 6,
+        "total_attendance_for_date": 2,
+        "members_for_month": 1,
+        "visitors_count": 1
+      }
+    }
+
+-------------------------------------------------------------
 
 ## QR Code
 
@@ -251,7 +710,7 @@ filter using any field and value
   | user_id   | string | Yes      | User's unique ID   |
 
 - **Sample Request:**
-    ```javascript
+  ```javascript
     let headersList = {
         "Accept": "*/*",
         "User-Agent": "client name",
@@ -270,7 +729,7 @@ filter using any field and value
         });
 
         let data = await response.text();
-        console.log(data);```
+        console.log(data);
 - **Sample Response of Success**
   ```json
         {
@@ -280,9 +739,7 @@ filter using any field and value
             "qr_code_image": "iVBORw0KGgoAAAANSUhEUgAAAQAAAAEAAQMAAABmvDolAAAABlBMVEX///8AAABVwtN+AAAB+klEQVR42uyYPbLkIAyEmyJwyBE4Cjfzz804CkcgJKDcWxL2G7v2bbLRyGUlUzN8EwgJqSW89tpr/2cLSbZIz+JayJgKEOQ3PgsA4BpSD3KS+8QVIR8HdgBPbg3oiBsrgCgAWQwCMXdg1iiV2TDg5QSJDa4/EdCcjATiPlX8K2m/HRj1IfdQ5qkm3+LWfysg3w0MEzfhyIyJ7L+U9C8HFiBtJHvgOoK1e3H8Gs0HACC5jw+phr5pfB0LLAEL6/GyNJriYgfYYApAD3mWnJSXJQ+qqJstrpYArQ8sGHmW1L+gsudZAOQeVD8cL4sdyV1bkgWANW3qphbzPkk08y6dyRBw1IfUEfchf+CZd0RTwNJHnpFFW5Jy8pflWcB5HTWuE2UWmn1Njp9wmwDIvLQoFdxRVBBmX3FLWgMAVH9GSUb3MwulS7BMAEd9SD3wGOWomfc0wOtXaUnrGIJGTn5UkAVAoqk5Kd00HCoo8SIwTADDzeRrFHmNqcgDu84PFoBD5CQN1pinD9nzKOCc9XyN1AuI2xDeiyXgnLt1FRLGxBruMskCMJaHIobWMT64Dux/bRe/HBj7KLLi3EepuvtouQcBo5jL+ACtiLAK1DEE6ao089azDAA/W3epcrrp9beVmw3gXB4iSmOFBuu2yH0E8Nprr93tTwAAAP//vvDCp6xAOnoAAAAASUVORK5CYII="
           }
         }
-        ```
----
-
+----------------------------------------------
 ## Roles (Admin Only)
 
 ### Create Role
@@ -318,7 +775,7 @@ filter using any field and value
     });
 
     let data = await response.text();
-    console.log(data);```
+    console.log(data);
 
 
 - **Sample Response**
@@ -335,7 +792,7 @@ filter using any field and value
         "date_added": "2025-07-12T11:39:03.159103+01:00",
         "date_updated": "2025-07-12T11:39:03.159103+01:00"
       }
-    }```
+    }
 
 
 
@@ -360,7 +817,7 @@ filter using any field and value
     });
 
     let data = await response.text();
-    console.log(data);```
+    console.log(data);
 
 - **Sample Response**
       ```json
@@ -413,7 +870,7 @@ filter using any field and value
             "total_pages": 1
           }
         }
-      }```
+      }
 
 
 ### Update Role
@@ -446,7 +903,7 @@ filter using any field and value
       });
 
       let data = await response.text();
-      console.log(data);```
+      console.log(data);
 
 
 
@@ -464,13 +921,13 @@ filter using any field and value
         "date_added": "2025-07-12T10:47:20.788Z",
         "date_updated": "2025-07-12T11:52:42.976094+01:00"
       }
-    }```
+    }
 
 ### Delete Role
 - **DELETE** `/roles/:id`
 - **Headers:** `Authorization: Bearer <JWT_ACCESS_TOKEN>` (admin)
 - **Sample Request:**
-    ```javascript
+  ```javascript
       let headersList = {
       "Accept": "*/*",
       "User-Agent": "Local Client",
@@ -484,16 +941,16 @@ filter using any field and value
 
       let data = await response.text();
       console.log(data);
-      ```
+
 
 - **Sample Response:**
-    ```json
+  ```json
       {
         "code": "ROLE_DELETED",
         "message": "Role deleted successfully"
-      }```
+      }
 
----
+---------------------------------------------------
 
 ## Sermons
 
@@ -509,7 +966,7 @@ filter using any field and value
   | ...           | ...    | ...      | Other sermon fields        |
 
 - **Sample Request:**
-      ```javascript
+  ```javascript
       let headersList = {
       "Accept": "*/*",
       "User-Agent": "Thunder Client (https://www.thunderclient.com)",
@@ -536,10 +993,10 @@ filter using any field and value
       });
 
       let data = await response.text();
-      console.log(data);```
+      console.log(data);
 
 - **Sample Response:**
-      ```json
+  ```json
       {
         "code": "SERMON_CREATED",
         "message": "Sermon created successfully",
@@ -557,7 +1014,7 @@ filter using any field and value
           "date_added": "2025-07-15T13:18:56.72782+01:00",
           "date_updated": "2025-07-15T13:18:56.72782+01:00"
         }
-      }```
+      }
 
 
 
@@ -565,7 +1022,7 @@ filter using any field and value
 - **GET** `/sermons`
 - **Headers:** `Authorization: Bearer <JWT_ACESS_TOKEN>`
 - **Sample Request:**
-    ```javascript
+  ```javascript
         let headersList = {
         "Accept": "*/*",
         "User-Agent": "Local Client",
@@ -578,11 +1035,11 @@ filter using any field and value
         });
 
         let data = await response.text();
-        console.log(data);```
+        console.log(data);
 
 
 - **Sample Response:**
-      ```json
+  ```json
       {
         "code": "SERMONS_RETRIEVED",
         "message": "Sermons retrieved successfully",
@@ -638,7 +1095,7 @@ filter using any field and value
             "total_pages": 1
           }
         }
-      }```
+      }
 
 
 ### Update Sermon
@@ -646,7 +1103,7 @@ filter using any field and value
 - **Headers:** `Authorization: Bearer <JWT_ACCESS_TOKEN>`
 - **Body:** 
 - **Sample Request:**
-    ```javascript
+  ```javascript
     let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client",
@@ -673,10 +1130,10 @@ filter using any field and value
     });
 
     let data = await response.text();
-    console.log(data);```
+    console.log(data);
 
 - **Sample Response:**
-    ```json
+  ```json
     {
       "code": "SERMON_UPDATED",
       "message": "Sermon updated successfully",
@@ -694,14 +1151,14 @@ filter using any field and value
         "date_added": "2025-07-15T13:36:15.31688+01:00",
         "date_updated": "2025-07-15T13:36:15.31688+01:00"
       }
-    }```
+    }
 
 
 ### Delete Sermon
 - **DELETE** `/sermons/:id`
 - **Headers:** `Authorization: Bearer <JWT_ACCESS_TOKEN>`
 - **Sample Request:**
-      ```javascript
+  ```javascript
       let headersList = {
       "Accept": "*/*",
       "User-Agent": "Local Client",
@@ -716,12 +1173,12 @@ filter using any field and value
       let data = await response.text();
       console.log(data);```
 - **Sample Response:**
-    ```json
+  ```json
     {
       "code": "SERMON_DELETED",
       "message": "Sermon deleted successfully"
-    }```
----
+    }
+----------------------------------------------------
 
 ## Announcements
 
@@ -737,7 +1194,7 @@ filter using any field and value
   | announcement_entry_made_by | string | Yes | User ObjectId      |
 
 - **Sample Request:**
-    ```javascript
+  ```javascript
     let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client",
@@ -764,10 +1221,10 @@ filter using any field and value
     });
 
     let data = await response.text();
-    console.log(data);```
+    console.log(data);
 
 - **Sample Response:**
-    ```javascript
+  ```javascript
     {
       "code": "ANNOUNCEMENT_CREATED",
       "message": "Announcement created successfully",
@@ -789,13 +1246,13 @@ filter using any field and value
         "date_updated": "2025-07-18T17:02:39.892673+01:00",
         "entry_made_by": "000000000000000000000000"
       }
-    }```
+    }
 
 ### Fetch all the Announcements
 - **GET** `/announcements/`
 - **HEaders:** `Authorization: Bearer <JWT_BEARER_TOKEN>`
 - **Sample Request:**
-   ```javascript
+  ```javascript
    let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client",
@@ -808,10 +1265,10 @@ filter using any field and value
     });
 
     let data = await response.text();
-    console.log(data);```
+    console.log(data);
 
 - **Sample Response:**
-    ```json
+  ```json
     {
       "code": "ANNOUNCEMENTS_RETRIEVED",
       "message": "Announcements retrieved successfully",
@@ -862,14 +1319,14 @@ filter using any field and value
           "total_pages": 1
         }
       }
-    }```
+    }
 
 
 ### Get Announcement by ID
 - **GET** `/announcements/:id`
 - **Headers:** `Authorization: Bearer <JWT_ACCESS_TOKEN>`
 - **sample Request:**
-    ```javascript
+  ```javascript
     let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client",
@@ -882,10 +1339,10 @@ filter using any field and value
     });
 
     let data = await response.text();
-    console.log(data);```
+    console.log(data);
 
 - **sample Response:**
-    ```json
+  ```json
     {
       "code": "ANNOUNCEMENT_RETRIEVED",
       "message": "Announcement retrieved successfully",
@@ -907,7 +1364,7 @@ filter using any field and value
         "date_updated": "2025-07-18T16:02:39.892Z",
         "entry_made_by": "000000000000000000000000"
       }
-    }```
+    }
 
 
 
@@ -916,7 +1373,7 @@ filter using any field and value
 - **Headers:** `Authorization: Bearer <JWT_ACCESS_TOKEN>`
 - **Body:** (same as create)
 - **sample Request:**
-    ```json
+  ```javascript
     let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client",
@@ -943,11 +1400,11 @@ filter using any field and value
     });
 
     let data = await response.text();
-    console.log(data);```
+    console.log(data);
 
 
 - **Sample Response:**
-    ```json
+  ```json
     {
       "code": "ANNOUNCEMENT_UPDATED",
       "message": "Announcement updated successfully",
@@ -969,13 +1426,13 @@ filter using any field and value
         "date_updated": "2025-07-18T16:02:39.892Z",
         "entry_made_by": "000000000000000000000000"
       }
-    }```
+    }
 
 ### Delete Announcement
 - **DELETE** `/announcements/:id`
 - **Headers:** `Authorization: Bearer <JWT_ACCESS_TOKEN>`
 - **Sample Request:**
-    ```json
+  ```javascript
     let headersList = {
     "Accept": "*/*",
     "User-Agent": "Thunder Client (https://www.thunderclient.com)",
@@ -988,16 +1445,16 @@ filter using any field and value
     });
 
     let data = await response.text();
-    console.log(data);```
+    console.log(data);
 
 - **Sample Response:**
-    ```json
+  ```json
     {
       "code": "ANNOUNCEMENT_DELETED",
       "message": "Announcement deleted successfully"
     }
-  ```
----
+
+------------------------------------------------------------------------------
 
 ## Family Members
 ---- Family member endpoints are yet to be tested!!!----
@@ -1021,7 +1478,7 @@ filter using any field and value
 - **DELETE** `/family-members/:id`
 - **Headers:** `Authorization: Bearer <JWT_ACCESS_TOKEN>`
 
----
+-----------------------------------------------------
 
 ## Local Churches (Admin Only)
 
@@ -1036,7 +1493,7 @@ filter using any field and value
   | ...           | ...    | ...      | Other church fields        |
 
 - **Sample Request:**
-    ```javascript
+  ```javascript
     let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client",
@@ -1074,7 +1531,7 @@ filter using any field and value
 
 
 - **Sample Response:**
-    ```json
+  ```json
     {
       "code": "CHURCH_CREATED",
       "message": "Church created successfully",
@@ -1099,7 +1556,7 @@ filter using any field and value
         "date_added": "2025-07-18T18:50:34.669977+01:00",
         "date_updated": "2025-07-18T18:50:34.669977+01:00"
       }
-    }```
+    }
 
 ### Update Church
 - **PUT** `/churches/:id`
@@ -1167,7 +1624,7 @@ filter using any field and value
         "date_added": "2025-07-18T17:57:19.839Z",
         "date_updated": "2025-07-18T19:05:46.022937+01:00"
       }
-    }```
+    }
 
 
 ### Get Church by ID
@@ -1218,7 +1675,7 @@ filter using any field and value
         "date_added": "2025-07-18T17:57:19.839Z",
         "date_updated": "2025-07-18T17:57:19.839Z"
       }
-    }```
+    }
 
 
 ### Fetch the list of all the Church
@@ -1244,65 +1701,64 @@ filter using any field and value
 
 
 - **Sample Response:**
-```json
-  {
-  "code": "CHURCHES_RETRIEVED",
-  "message": "Churches retrieved successfully",
-  "data": {
-    "data": [
-      {
-        "id": "687a896aa4380825e6c2e7b0",
-        "church_name": "Utako CCI",
-        "church_phone": "8155657687",
-        "church_email": "utako@joincci.org",
-        "church_address": "31, eden parks and garden, uatako",
-        "state_county": "Federal capital territory",
-        "country": "Nigeria",
-        "sunday_meeting_time": 9,
-        "midweek_meeting_day": "Wednesday",
-        "midweek_meeting_time": 17,
-        "website": "http://www.joincci.org",
-        "social_media": "@cci_utako",
-        "pastor_name": "Utako CCI",
-        "pastor_phone": "0989876554",
-        "pastor_email": "utako@joincci.org",
-        "founded_year": 2016,
-        "description": "This is the hq of the Northern church",
-        "date_added": "2025-07-18T17:50:34.669Z",
-        "date_updated": "2025-07-18T17:50:34.669Z"
-      },
-       . . . .
-      {
-        "id": "687a8affa4380825e6c2e7b5",
-        "church_name": "Test CCI",
-        "church_phone": "8155657687",
-        "church_email": "mrrb@joincci.org",
-        "church_address": "31, Wulvan event centre",
-        "state_county": "Federal capital territory",
-        "country": "Nigeria",
-        "sunday_meeting_time": 9,
-        "midweek_meeting_day": "Wednesday",
-        "midweek_meeting_time": 17,
-        "website": "http://www.joincci.org",
-        "social_media": "@cci_marraba",
-        "pastor_name": "Test CCI",
-        "pastor_phone": "0989876554",
-        "pastor_email": "mrrb@joincci.org",
-        "founded_year": 2021,
-        "description": "This is the hq of the Northern mararaba church",
-        "date_added": "2025-07-18T17:57:19.839Z",
-        "date_updated": "2025-07-18T17:57:19.839Z"
+  ```json
+    {
+    "code": "CHURCHES_RETRIEVED",
+    "message": "Churches retrieved successfully",
+    "data": {
+      "data": [
+        {
+          "id": "687a896aa4380825e6c2e7b0",
+          "church_name": "Utako CCI",
+          "church_phone": "8155657687",
+          "church_email": "utako@joincci.org",
+          "church_address": "31, eden parks and garden, uatako",
+          "state_county": "Federal capital territory",
+          "country": "Nigeria",
+          "sunday_meeting_time": 9,
+          "midweek_meeting_day": "Wednesday",
+          "midweek_meeting_time": 17,
+          "website": "http://www.joincci.org",
+          "social_media": "@cci_utako",
+          "pastor_name": "Utako CCI",
+          "pastor_phone": "0989876554",
+          "pastor_email": "utako@joincci.org",
+          "founded_year": 2016,
+          "description": "This is the hq of the Northern church",
+          "date_added": "2025-07-18T17:50:34.669Z",
+          "date_updated": "2025-07-18T17:50:34.669Z"
+        },
+        . . . .
+        {
+          "id": "687a8affa4380825e6c2e7b5",
+          "church_name": "Test CCI",
+          "church_phone": "8155657687",
+          "church_email": "mrrb@joincci.org",
+          "church_address": "31, Wulvan event centre",
+          "state_county": "Federal capital territory",
+          "country": "Nigeria",
+          "sunday_meeting_time": 9,
+          "midweek_meeting_day": "Wednesday",
+          "midweek_meeting_time": 17,
+          "website": "http://www.joincci.org",
+          "social_media": "@cci_marraba",
+          "pastor_name": "Test CCI",
+          "pastor_phone": "0989876554",
+          "pastor_email": "mrrb@joincci.org",
+          "founded_year": 2021,
+          "description": "This is the hq of the Northern mararaba church",
+          "date_added": "2025-07-18T17:57:19.839Z",
+          "date_updated": "2025-07-18T17:57:19.839Z"
+        }
+      ],
+      "pagination": {
+        "page": 1,
+        "limit": 10,
+        "total": 5,
+        "total_pages": 1
       }
-    ],
-    "pagination": {
-      "page": 1,
-      "limit": 10,
-      "total": 5,
-      "total_pages": 1
     }
   }
-}
-```
 
 ### Delete Church
 - **DELETE** `/churches/:id`
@@ -1326,13 +1782,13 @@ filter using any field and value
 
 
 - **Sample Response:**
-    ```json
+  ```json
     {
       "code": "CHURCH_DELETED",
       "message": "Church deleted successfully"
     }
 
----------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
 
 ## General Notes
 
@@ -1341,7 +1797,4 @@ filter using any field and value
 - **Date fields should be in `YYYY-MM-DD` format unless otherwise specified.**
 - **For endpoints requiring admin privileges, the JWT token must belong to an admin user.**
 - **All responses are in JSON format.**
-
----
-
-###For more details on each field, refer to the DTO definitions in the codebase or contact the backend Engineer (Seun Adeniyi).
+- **For more details on each field, refer to the DTO definitions in the codebase or contact the backend Engineer (Seun Adeniyi)**.
