@@ -1200,7 +1200,8 @@ console.log(data);`
 
 
 - **Sample Response:**
-`{
+```http
+  {
   "code": "CHURCHES_RETRIEVED",
   "message": "Churches retrieved successfully",
   "data": {
@@ -1256,14 +1257,16 @@ console.log(data);`
       "total_pages": 1
     }
   }
-}`
+}
+```
 
 ### Delete Church
 - **DELETE** `/churches/:id`
 - **Headers:** `Authorization: Bearer <JWT_ACCESS_TOKEN>` (must be admin)
 
 - **Sample Request:**
-   `let headersList = {
+   ```http
+    let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client ",
     "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCOjE3NTI4NjEzOTd9.VojBn-hyTxUpkj7hHgCXjEcFvNIEPJtLqcoaJG52ztI"
@@ -1275,14 +1278,17 @@ console.log(data);`
     });
 
     let data = await response.text();
-    console.log(data);`
+    console.log(data);
+    ```
 
 
 - **Sample REsponse:**
-    `{
-      "code": "CHURCH_DELETED",
-      "message": "Church deleted successfully"
-    }`
+    ```http
+    {
+      `"code": "CHURCH_DELETED",`
+      `"message": "Church deleted successfully"`
+    }
+    ```
 
 ---------------------------------------------------------------------------
 
