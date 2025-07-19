@@ -804,7 +804,7 @@
   - Must be admin
 - **Body:**
 - **Sample Request**
-    ```javascript
+  ```javascript
     let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client",
@@ -820,7 +820,7 @@
     console.log(data);
 
 - **Sample Response**
-      ```json
+    ```json
       {
         "code": "ROLES_RETRIEVED",
         "message": "Roles retrieved successfully",
@@ -882,7 +882,7 @@
   | name  | string | Yes      | Role name        |
 
 - **Sample Request:**
-      ```javascript
+    ```javascript
       let headersList = {
       "Accept": "*/*",
       "User-Agent": "Local Client",
@@ -908,7 +908,7 @@
 
 
 - **Sample Response:**
-    ```json
+  ```json
     {
       "code": "ROLE_UPDATED",
       "message": "Role updated successfully",
