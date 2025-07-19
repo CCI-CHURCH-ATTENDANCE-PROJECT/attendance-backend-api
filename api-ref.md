@@ -17,7 +17,8 @@
   | user_password                   | string | Yes      | Password (min 8 chars,  strong recommended)  |
 
 - **Sample Request**
-      `let headersList = {
+  ```javascript
+  let headersList = {
       "Accept": "*/*",
       "User-Agent": "Thunder Client (https://www.thunderclient.com)",
       "Content-Type": "application/json"
@@ -35,10 +36,11 @@
       });
 
       let data = await response.text();
-      console.log(data);`
+      console.log(data);
 
 - **Sample Response**
-      `{
+  ```json
+  {
         "success": true,
         "message": "User registered successfully",
         "data": {
@@ -46,7 +48,7 @@
           "email": "seun@gmail.com",
           "created_at": "2025-07-12T10:56:56.552188+01:00"
         }
-      }`
+      }
 
 
 
@@ -55,7 +57,8 @@
 - **Headers:** `Content-Type: application/json`
 - **Body:** (fields as required for completion by the DTO, see sample request body below for guidance)
 - **Sample Request**
-    `let headersList = {
+  ```javascript
+  let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local API Client (local)",
     "Content-Type": "application/json"
@@ -99,10 +102,11 @@
     });
 
     let data = await response.text();
-    console.log(data);`
+    console.log(data);
 
 - **Sample Response**
-    `{
+    ```json
+    {
       "success": true,
       "message": "User registered successfully",
       "data": {
@@ -110,7 +114,7 @@
         "email": "yusuf@gmail.com",
         "created_at": "2025-07-12T11:12:34.738426+01:00"
       }
-    }`
+    }```
 
 `###I still need to Check the complete register endpoint for some fields that are not saving properly? Also check and standardise the way family member list should be stored for a family head user`
 
@@ -180,7 +184,8 @@ filter using any field and value
   | qr_code   | string | Yes      | QR code string     |
 
 - **Sample Request**
-      `let headersList = {
+  ```javascript
+  let headersList = {
       "Accept": "*/*",
       "User-Agent": "Client name",
       "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTcwNjk4IiwiZTIwMDZ9.dAkT3Bx1hRcpYbuHUratTpdFgrwjWw_pm2X0UQ2K1Xw",
@@ -198,10 +203,11 @@ filter using any field and value
       });
 
       let data = await response.text();
-      console.log(data);`
+      console.log(data);```
 
 - **Sample Response**
-      `{
+  ```json
+  {
         "success": true,
         "message": "QR check-in successful",
         "data": {
@@ -214,7 +220,7 @@ filter using any field and value
           "visitor": false,
           "member": false
         }
-      }`
+      }```
 
 
 
@@ -245,7 +251,8 @@ filter using any field and value
   | user_id   | string | Yes      | User's unique ID   |
 
 - **Sample Request:**
-        `let headersList = {
+    ```javascript
+    let headersList = {
         "Accept": "*/*",
         "User-Agent": "client name",
         "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTcwNjk4TIzMTIwMDZ9.dAkT3Bx1hRcpYbuHUratTpdFgrwjWw_pm2X0UQ2K1Xw",
@@ -263,15 +270,17 @@ filter using any field and value
         });
 
         let data = await response.text();
-        console.log(data);`
+        console.log(data);```
 - **Sample Response of Success**
-        `{
+  ```json
+        {
           "success": true,
           "data": {
             "qr_code_token": "uT7ojQyOaaNu3FmA7Vk79tVacclZ88ZVa7dZXEsu-Ok=",
             "qr_code_image": "iVBORw0KGgoAAAANSUhEUgAAAQAAAAEAAQMAAABmvDolAAAABlBMVEX///8AAABVwtN+AAAB+klEQVR42uyYPbLkIAyEmyJwyBE4Cjfzz804CkcgJKDcWxL2G7v2bbLRyGUlUzN8EwgJqSW89tpr/2cLSbZIz+JayJgKEOQ3PgsA4BpSD3KS+8QVIR8HdgBPbg3oiBsrgCgAWQwCMXdg1iiV2TDg5QSJDa4/EdCcjATiPlX8K2m/HRj1IfdQ5qkm3+LWfysg3w0MEzfhyIyJ7L+U9C8HFiBtJHvgOoK1e3H8Gs0HACC5jw+phr5pfB0LLAEL6/GyNJriYgfYYApAD3mWnJSXJQ+qqJstrpYArQ8sGHmW1L+gsudZAOQeVD8cL4sdyV1bkgWANW3qphbzPkk08y6dyRBw1IfUEfchf+CZd0RTwNJHnpFFW5Jy8pflWcB5HTWuE2UWmn1Njp9wmwDIvLQoFdxRVBBmX3FLWgMAVH9GSUb3MwulS7BMAEd9SD3wGOWomfc0wOtXaUnrGIJGTn5UkAVAoqk5Kd00HCoo8SIwTADDzeRrFHmNqcgDu84PFoBD5CQN1pinD9nzKOCc9XyN1AuI2xDeiyXgnLt1FRLGxBruMskCMJaHIobWMT64Dux/bRe/HBj7KLLi3EepuvtouQcBo5jL+ACtiLAK1DEE6ao089azDAA/W3epcrrp9beVmw3gXB4iSmOFBuu2yH0E8Nprr93tTwAAAP//vvDCp6xAOnoAAAAASUVORK5CYII="
           }
-        }`
+        }
+        ```
 ---
 
 ## Roles (Admin Only)
@@ -288,7 +297,8 @@ filter using any field and value
   | permissions | list   | Yes        |  List of permissions you want the role to have|
 
 - **Sample Request**
-    `let headersList = {
+    ```javascript
+    let headersList = {
     "Accept": "*/*",
     "User-Agent": "Thunder Client (https://www.thunderclient.com)",
     "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJaWwiOiJ5dXN1ZkBnbWFpbC5jb20iLCJhZG1pbiI6dHJ1ZSwiaXNzIjoiY2h1cmNoLWF0dGVuZGFuY2UtYXBpIiwiZXhwIjoxNzUyMzE3MTMyLCJpYXQiOjE3NTIzMTYyMzJ9.aqqQYwNa8RQ5VweqEJT3Cg4bqEfym45MQ4iYGWwLpYA",
@@ -308,11 +318,12 @@ filter using any field and value
     });
 
     let data = await response.text();
-    console.log(data);`
+    console.log(data);```
 
 
 - **Sample Response**
-    `{
+    ```json
+    {
       "code": "ROLE_CREATED",
       "message": "Role created successfully",
       "data": {
@@ -324,7 +335,7 @@ filter using any field and value
         "date_added": "2025-07-12T11:39:03.159103+01:00",
         "date_updated": "2025-07-12T11:39:03.159103+01:00"
       }
-    }`
+    }```
 
 
 
@@ -336,7 +347,8 @@ filter using any field and value
   - Must be admin
 - **Body:**
 - **Sample Request**
-    `let headersList = {
+    ```javascript
+    let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client",
     "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTg5NDg5IiwiZW1haWwiOiJ5dXN1ZkBnbWFpbC5jb20iLCJhZG1pbiI6dHJ1ZSwiaXNzIjoiY2h1cmNoLWF0dGVuZGFuY2UtYXBpIiwiZXhwIjoxNzUyMzE3MTMyLCJpYXQiOjE3NTIzMTYyMzJ9.aqqQYwNa8RQ5VweqEJT3Cg4bqEfym45MQ4iYGWwLpYA"
@@ -348,10 +360,11 @@ filter using any field and value
     });
 
     let data = await response.text();
-    console.log(data);`
+    console.log(data);```
 
 - **Sample Response**
-      `{
+      ```json
+      {
         "code": "ROLES_RETRIEVED",
         "message": "Roles retrieved successfully",
         "data": {
@@ -400,7 +413,7 @@ filter using any field and value
             "total_pages": 1
           }
         }
-      }`
+      }```
 
 
 ### Update Role
@@ -412,7 +425,8 @@ filter using any field and value
   | name  | string | Yes      | Role name        |
 
 - **Sample Request:**
-      `let headersList = {
+      ```javascript
+      let headersList = {
       "Accept": "*/*",
       "User-Agent": "Local Client",
       "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTg5MTcxODN9.6grb-nkJqQPz1CU7Ch79T4DLMsJQeqn__AdfqmZcE6c",
@@ -432,12 +446,13 @@ filter using any field and value
       });
 
       let data = await response.text();
-      console.log(data);`
+      console.log(data);```
 
 
 
 - **Sample Response:**
-    `{
+    ```json
+    {
       "code": "ROLE_UPDATED",
       "message": "Role updated successfully",
       "data": {
@@ -449,13 +464,14 @@ filter using any field and value
         "date_added": "2025-07-12T10:47:20.788Z",
         "date_updated": "2025-07-12T11:52:42.976094+01:00"
       }
-    }`
+    }```
 
 ### Delete Role
 - **DELETE** `/roles/:id`
 - **Headers:** `Authorization: Bearer <JWT_ACCESS_TOKEN>` (admin)
 - **Sample Request:**
-      `let headersList = {
+    ```javascript
+      let headersList = {
       "Accept": "*/*",
       "User-Agent": "Local Client",
       "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTg5NDg5IiwiZW1haWwiOiJ5dXN1ZkBnbWFpbC5jb20iLCJhZG1pbiI6dHJ1ZSwiaXNzIjoiY2h1cmNoLWF0dGVuZGFuY2UtYXBpIiwiZXhwIjoxNzUyMzE4ODE1LCJpYXQiOjE3NTIzMTc5MTV9.WKlKhQG5CITr6fRVWPimMR1dh6mAdn545PZ-u7ur9MM"
@@ -468,12 +484,14 @@ filter using any field and value
 
       let data = await response.text();
       console.log(data);
+      ```
 
 - **Sample Response:**
+    ```json
       {
         "code": "ROLE_DELETED",
         "message": "Role deleted successfully"
-      }`
+      }```
 
 ---
 
@@ -491,7 +509,8 @@ filter using any field and value
   | ...           | ...    | ...      | Other sermon fields        |
 
 - **Sample Request:**
-      `let headersList = {
+      ```javascript
+      let headersList = {
       "Accept": "*/*",
       "User-Agent": "Thunder Client (https://www.thunderclient.com)",
       "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTg5NDg5IiwiZW1haWwiOiJ5dXN1ZkBnbWFpbC5jb20iLCJhZG1pbiI6dHJ1ZSwiaXNzIjoiY2h1cmNoLWF0dGVuZGFuY2UtYXBpIiwiZXhwIjoxNzUyNTgyNzc3LCJpYXQiOjE3NTI1ODE4Nzd9.1rFHpRzmT5YAoyvbh22rbJWxcdZpjakOwffFlVUMxWw",
@@ -517,10 +536,11 @@ filter using any field and value
       });
 
       let data = await response.text();
-      console.log(data);`
+      console.log(data);```
 
 - **Sample Response:**
-      `{
+      ```json
+      {
         "code": "SERMON_CREATED",
         "message": "Sermon created successfully",
         "data": {
@@ -537,7 +557,7 @@ filter using any field and value
           "date_added": "2025-07-15T13:18:56.72782+01:00",
           "date_updated": "2025-07-15T13:18:56.72782+01:00"
         }
-      }`
+      }```
 
 
 
@@ -545,7 +565,8 @@ filter using any field and value
 - **GET** `/sermons`
 - **Headers:** `Authorization: Bearer <JWT_ACESS_TOKEN>`
 - **Sample Request:**
-        `let headersList = {
+    ```javascript
+        let headersList = {
         "Accept": "*/*",
         "User-Agent": "Local Client",
         "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJC1NzgxOTJ9.Jj41tDRp-R8U-UiXt_psJsVIhqm0d5AsnwxluWVb9ZY"
@@ -557,11 +578,12 @@ filter using any field and value
         });
 
         let data = await response.text();
-        console.log(data);`
+        console.log(data);```
 
 
 - **Sample Response:**
-      `{
+      ```json
+      {
         "code": "SERMONS_RETRIEVED",
         "message": "Sermons retrieved successfully",
         "data": {
@@ -616,7 +638,7 @@ filter using any field and value
             "total_pages": 1
           }
         }
-      }`
+      }```
 
 
 ### Update Sermon
@@ -624,7 +646,8 @@ filter using any field and value
 - **Headers:** `Authorization: Bearer <JWT_ACCESS_TOKEN>`
 - **Body:** 
 - **Sample Request:**
-    `let headersList = {
+    ```javascript
+    let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client",
     "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTg5NDgDV9.Rt3kV6Phl2fGsfm-IYRTWJXQL4aYH0ytnJwYrbEGAFI",
@@ -650,10 +673,11 @@ filter using any field and value
     });
 
     let data = await response.text();
-    console.log(data);`
+    console.log(data);```
 
 - **Sample Response:**
-    `{
+    ```json
+    {
       "code": "SERMON_UPDATED",
       "message": "Sermon updated successfully",
       "data": {
@@ -670,14 +694,15 @@ filter using any field and value
         "date_added": "2025-07-15T13:36:15.31688+01:00",
         "date_updated": "2025-07-15T13:36:15.31688+01:00"
       }
-    }`
+    }```
 
 
 ### Delete Sermon
 - **DELETE** `/sermons/:id`
 - **Headers:** `Authorization: Bearer <JWT_ACCESS_TOKEN>`
 - **Sample Request:**
-      `let headersList = {
+      ```javascript
+      let headersList = {
       "Accept": "*/*",
       "User-Agent": "Local Client",
       "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTg5N5MDV9.Rt3kV6Phl2fGsfm-IYRTWJXQL4aYH0ytnJwYrbEGAFI"
@@ -689,12 +714,13 @@ filter using any field and value
       });
 
       let data = await response.text();
-      console.log(data);`
+      console.log(data);```
 - **Sample Response:**
-    `{
+    ```json
+    {
       "code": "SERMON_DELETED",
       "message": "Sermon deleted successfully"
-    }`
+    }```
 ---
 
 ## Announcements
@@ -711,7 +737,8 @@ filter using any field and value
   | announcement_entry_made_by | string | Yes | User ObjectId      |
 
 - **Sample Request:**
-    `let headersList = {
+    ```javascript
+    let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client",
     "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJ3NTI4NTM4OTh9.aK59e2tpNwv88r6-eG1qccRhMtP8Cn6JXw4fTFisFd8",
@@ -737,10 +764,11 @@ filter using any field and value
     });
 
     let data = await response.text();
-    console.log(data);`
+    console.log(data);```
 
 - **Sample Response:**
-    `{
+    ```javascript
+    {
       "code": "ANNOUNCEMENT_CREATED",
       "message": "Announcement created successfully",
       "data": {
@@ -761,13 +789,14 @@ filter using any field and value
         "date_updated": "2025-07-18T17:02:39.892673+01:00",
         "entry_made_by": "000000000000000000000000"
       }
-    }`
+    }```
 
 ### Fetch all the Announcements
 - **GET** `/announcements/`
 - **HEaders:** `Authorization: Bearer <JWT_BEARER_TOKEN>`
 - **Sample Request:**
-   `let headersList = {
+   ```javascript
+   let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client",
     "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTg54NTY0MDV9.wwWPaZ1gsd8zNHPL3XszXMe72NXny56QOSxDC6_Bbuw"
@@ -779,10 +808,11 @@ filter using any field and value
     });
 
     let data = await response.text();
-    console.log(data);`
+    console.log(data);```
 
 - **Sample Response:**
-    `{
+    ```json
+    {
       "code": "ANNOUNCEMENTS_RETRIEVED",
       "message": "Announcements retrieved successfully",
       "data": {
@@ -832,14 +862,15 @@ filter using any field and value
           "total_pages": 1
         }
       }
-    }`
+    }```
 
 
 ### Get Announcement by ID
 - **GET** `/announcements/:id`
 - **Headers:** `Authorization: Bearer <JWT_ACCESS_TOKEN>`
 - **sample Request:**
-    `let headersList = {
+    ```javascript
+    let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client",
     "Authorization": "Bearer eyJhbGciOY0MDV9.wwWPaZ1gsd8zNHPL3XszXMe72NXny56QOSxDC6_Bbuw"
@@ -851,10 +882,11 @@ filter using any field and value
     });
 
     let data = await response.text();
-    console.log(data);`
+    console.log(data);```
 
 - **sample Response:**
-    `{
+    ```json
+    {
       "code": "ANNOUNCEMENT_RETRIEVED",
       "message": "Announcement retrieved successfully",
       "data": {
@@ -875,7 +907,7 @@ filter using any field and value
         "date_updated": "2025-07-18T16:02:39.892Z",
         "entry_made_by": "000000000000000000000000"
       }
-    }`
+    }```
 
 
 
@@ -884,7 +916,8 @@ filter using any field and value
 - **Headers:** `Authorization: Bearer <JWT_ACCESS_TOKEN>`
 - **Body:** (same as create)
 - **sample Request:**
-    `let headersList = {
+    ```json
+    let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client",
     "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTE3NTI4NTQ4MzV9.OBx3aUZp7dv0zD7wtIcs5CH_2XggcHnKqU1mym3jrEY",
@@ -910,11 +943,12 @@ filter using any field and value
     });
 
     let data = await response.text();
-    console.log(data);`
+    console.log(data);```
 
 
 - **Sample Response:**
-    `{
+    ```json
+    {
       "code": "ANNOUNCEMENT_UPDATED",
       "message": "Announcement updated successfully",
       "data": {
@@ -935,13 +969,14 @@ filter using any field and value
         "date_updated": "2025-07-18T16:02:39.892Z",
         "entry_made_by": "000000000000000000000000"
       }
-    }`
+    }```
 
 ### Delete Announcement
 - **DELETE** `/announcements/:id`
 - **Headers:** `Authorization: Bearer <JWT_ACCESS_TOKEN>`
 - **Sample Request:**
-    `let headersList = {
+    ```json
+    let headersList = {
     "Accept": "*/*",
     "User-Agent": "Thunder Client (https://www.thunderclient.com)",
     "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTg5NY0MDV9.wwWPaZ1gsd8zNHPL3XszXMe72NXny56QOSxDC6_Bbuw"
@@ -953,13 +988,15 @@ filter using any field and value
     });
 
     let data = await response.text();
-    console.log(data);`
+    console.log(data);```
 
 - **Sample Response:**
-    `{
+    ```json
+    {
       "code": "ANNOUNCEMENT_DELETED",
       "message": "Announcement deleted successfully"
-    }`
+    }
+  ```
 ---
 
 ## Family Members
@@ -999,7 +1036,8 @@ filter using any field and value
   | ...           | ...    | ...      | Other church fields        |
 
 - **Sample Request:**
-    `let headersList = {
+    ```javascript
+    let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client",
     "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTg5NDg5IiwiZW19.b2HRcQgcKWYPVpeWpqNsW7tZV12OwXc8xMgckNIHwYk",
@@ -1032,11 +1070,12 @@ filter using any field and value
     });
 
     let data = await response.text();
-    console.log(data);`
+    console.log(data);
 
 
 - **Sample Response:**
-    `{
+    ```json
+    {
       "code": "CHURCH_CREATED",
       "message": "Church created successfully",
       "data": {
@@ -1060,7 +1099,7 @@ filter using any field and value
         "date_added": "2025-07-18T18:50:34.669977+01:00",
         "date_updated": "2025-07-18T18:50:34.669977+01:00"
       }
-    }`
+    }```
 
 ### Update Church
 - **PUT** `/churches/:id`
@@ -1068,43 +1107,43 @@ filter using any field and value
 - **Body:** (same as create)
 
 - **Sample Request:**
-`let headersList = {
- "Accept": "*/*",
- "User-Agent": "Local Client ",
- "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJOjE3NTI4NjEzOTd9.VojBn-hyTxUpkj7hHgCXjEcFvNIEPJtLqcoaJG52ztI",
- "Content-Type": "application/json"
-}
+  ```javascript
+    let headersList = {
+    "Accept": "*/*",
+    "User-Agent": "Local Client ",
+    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJOjE3NTI4NjEzOTd9.VojBn-hyTxUpkj7hHgCXjEcFvNIEPJtLqcoaJG52ztI",
+    "Content-Type": "application/json"
+    }
 
-let bodyContent = JSON.stringify({
-  "church_name": "Updated CCI",
-  "church_phone": "8155657687",
-  "church_email": "mrrb@joincci.org",
-  "church_address": "31, Updated Wulvan event centre",
-  "state_county": "Federal capital territory",
-  "country": "Nigeria",
-  "sunday_meeting_time": 9,
-  "midweek_meeting_day": "Wednesday",
-  "midweek_meeting_time": 17,
-  "website": "http://www.joincci.org",
-  "social_media": "@cci_marraba",
-  "pastor_name": "Pastor Yemi Arowolo",
-  "Pastor_phone": "0989876554",
-  "pastor_email": "updatedyemi@joincci.org",
-  "founded_year": 2021,
-  "description": "This is the hq of the Northern mararaba church"
-});
-
-let response = await fetch("http://localhost:8080/api/v1/churches/687a8affa4380825e6c2e7b5", { 
-  method: "PUT",
-  body: bodyContent,
-  headers: headersList
-});
-
-let data = await response.text();
-console.log(data);`
+    let bodyContent = JSON.stringify({
+      "church_name": "Updated CCI",
+      "church_phone": "8155657687",
+      "church_email": "mrrb@joincci.org",
+      "church_address": "31, Updated Wulvan event centre",
+      "state_county": "Federal capital territory",
+      "country": "Nigeria",
+      "sunday_meeting_time": 9,
+      "midweek_meeting_day": "Wednesday",
+      "midweek_meeting_time": 17,
+      "website": "http://www.joincci.org",
+      "social_media": "@cci_marraba",
+      "pastor_name": "Pastor Yemi Arowolo",
+      "Pastor_phone": "0989876554",
+      "pastor_email": "updatedyemi@joincci.org",
+      "founded_year": 2021,
+      "description": "This is the hq of the Northern mararaba church"
+    });
+    let response = await fetch("http://localhost:8080/api/v1/churches/687a8affa4380825e6c2e7b5", { 
+      method: "PUT",
+      body: bodyContent,
+      headers: headersList
+    });
+    let data = await response.text();
+    console.log(data);
 
 - **Sample Response:**
-    `{
+  ```json
+    {
       "code": "CHURCH_UPDATED",
       "message": "Church updated successfully",
       "data": {
@@ -1128,7 +1167,7 @@ console.log(data);`
         "date_added": "2025-07-18T17:57:19.839Z",
         "date_updated": "2025-07-18T19:05:46.022937+01:00"
       }
-    }`
+    }```
 
 
 ### Get Church by ID
@@ -1137,7 +1176,9 @@ console.log(data);`
 - **Body:** None
 
 - **Sample Request:**
-    `let headersList = {
+  ```javascript
+
+    let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client",
     "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTI4NjEzOTd9.VojBn-hyTxUpkj7hHgCXjEcFvNIEPJtLqcoaJG52ztI"
@@ -1149,10 +1190,11 @@ console.log(data);`
     });
 
     let data = await response.text();
-    console.log(data);`
+    console.log(data);
 
 - **Sample Response:**
-    `{
+    ```json
+    {
       "code": "CHURCH_RETRIEVED",
       "message": "Church retrieved successfully",
       "data": {
@@ -1176,7 +1218,7 @@ console.log(data);`
         "date_added": "2025-07-18T17:57:19.839Z",
         "date_updated": "2025-07-18T17:57:19.839Z"
       }
-    }`
+    }```
 
 
 ### Fetch the list of all the Church
@@ -1184,7 +1226,9 @@ console.log(data);`
 - **Headers:** `Authorization: Bearer <JWT_ACCESS_TOKEN>` (must be admin)
 
 - **Sample Request:**
-    `let headersList = {
+  ```javascript
+
+    let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client",
     "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTgNTI4NjEzOTd9.VojBn-hyTxUpkj7hHgCXjEcFvNIEPJtLqcoaJG52ztI"
@@ -1196,11 +1240,11 @@ console.log(data);`
     });
 
     let data = await response.text();
-    console.log(data);`
+    console.log(data);
 
 
 - **Sample Response:**
-```http
+```json
   {
   "code": "CHURCHES_RETRIEVED",
   "message": "Churches retrieved successfully",
@@ -1227,7 +1271,7 @@ console.log(data);`
         "date_added": "2025-07-18T17:50:34.669Z",
         "date_updated": "2025-07-18T17:50:34.669Z"
       },
-       . . . .,
+       . . . .
       {
         "id": "687a8affa4380825e6c2e7b5",
         "church_name": "Test CCI",
@@ -1265,7 +1309,7 @@ console.log(data);`
 - **Headers:** `Authorization: Bearer <JWT_ACCESS_TOKEN>` (must be admin)
 
 - **Sample Request:**
-   ```http
+  ```javascript
     let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client ",
@@ -1279,16 +1323,14 @@ console.log(data);`
 
     let data = await response.text();
     console.log(data);
-    ```
 
 
-- **Sample REsponse:**
-    ```http
+- **Sample Response:**
+    ```json
     {
-      `"code": "CHURCH_DELETED",`
-      `"message": "Church deleted successfully"`
+      "code": "CHURCH_DELETED",
+      "message": "Church deleted successfully"
     }
-    ```
 
 ---------------------------------------------------------------------------
 
