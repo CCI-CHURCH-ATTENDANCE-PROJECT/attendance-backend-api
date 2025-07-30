@@ -13,32 +13,36 @@ type BasicRegisterRequest struct {
 }
 
 type CompleteRegisterRequest struct {
-	Email                        string              `json:"email" validate:"required,email"`
-	Password                     string              `json:"password" validate:"required,min=8"`
-	FirstName                    string              `json:"FirstName" validate:"required,min=2,max=50"`
-	LastName                     string              `json:"LastName" validate:"required,min=2,max=50"`
-	Bio                          string              `json:"bio"`
-	DateOfBirth                  string              `json:"date_of_birth"`
-	Gender                       string              `json:"gender" validate:"oneof=Male Female Other"`
-	Member                       bool                `json:"member"`
-	Visitor                      bool                `json:"visitor"`
-	Usher                        bool                `json:"usher"`
-	Admin                        bool                `json:"admin"`
-	UserWorkDepartment           *primitive.ObjectID `json:"user_work_unit"`
-	DateJoinedChurch             string              `json:"date_joined_church"`
-	FamilyHead                   bool                `json:"family_head"`
-	UserCampus                   string              `json:"user_campus"`
-	InstagramHandle              string              `json:"instagram_handle"`
-	FamilyMemberID               uint                `json:"family_member_id"`
-	PhoneNumber                  string              `json:"phone_number" validate:"omitempty,e164"`
-	Profession                   string              `json:"profession"`
-	UserHouseAddress             string              `json:"user_house_address"`
-	CampusState                  string              `json:"campus_state"`
-	CampusCountry                string              `json:"campus_country"`
-	EmergencyContactName         string              `json:"emergency_contact_name"`
-	EmergencyContactPhone        string              `json:"emergency_contact_phone"`
-	EmergencyContactEmail        string              `json:"emergency_contact_email" validate:"omitempty,email"`
-	EmergencyContactRelationship string              `json:"emergency_contact_relationship"`
+	Email                        string   `json:"email" validate:"required,email"`
+	Password                     string   `json:"password" validate:"required,min=8"`
+	FirstName                    string   `json:"fname" validate:"required,min=2,max=50"`
+	LastName                     string   `json:"lname" validate:"required,min=2,max=50"`
+	Bio                          string   `json:"bio"`
+	DateOfBirth                  string   `json:"date_of_birth"`
+	Gender                       string   `json:"gender" validate:"oneof=Male Female"`
+	Member                       bool     `json:"member"`
+	Visitor                      bool     `json:"visitor"`
+	Usher                        bool     `json:"usher"`
+	UserWorkDepartment           string   `json:"user_work_unit"`
+	DateJoinedChurch             string   `json:"date_joined_church"`
+	FamilyHead                   bool     `json:"family_head"`
+	UserCampus                   string   `json:"user_campus"`
+	InstagramHandle              string   `json:"instagram_handle"`
+	FamilyMembers                []string `json:"family_members"`
+	PhoneNumber                  string   `json:"phone_number"`
+	Profession                   string   `json:"profession"`
+	UserHouseAddress             string   `json:"user_house_address"`
+	CampusState                  string   `json:"campus_state"`
+	CampusCountry                string   `json:"campus_country"`
+	EmergencyContactName         string   `json:"emergency_contact_name"`
+	EmergencyContactPhone        string   `json:"emergency_contact_phone"`
+	EmergencyContactEmail        string   `json:"emergency_contact_email" validate:"omitempty,email"`
+	EmergencyContactRelationship string   `json:"emergency_contact_relationship"`
+}
+
+type CreatePasswordRequest struct {
+	UserID   string `json:"user_id" validate:"required"`
+	Password string `json:"password" validate:"required"`
 }
 
 type LoginRequest struct {
@@ -56,6 +60,38 @@ type BasicRegisterResponse struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
+type CompleteRegisterResponse struct {
+	UserID                       string              `json:"user_id"`
+	Email                        string              `json:"email"`
+	FirstName                    string              `json:"FirstName"`
+	LastName                     string              `json:"LastName"`
+	Bio                          string              `json:"bio"`
+	DateOfBirth                  time.Time           `json:"date_of_birth"`
+	Gender                       string              `json:"gender"`
+	Member                       bool                `json:"member"`
+	Visitor                      bool                `json:"visitor"`
+	Usher                        bool                `json:"usher"`
+	Admin                        bool                `json:"admin"`
+	UserWorkDepartment           string              `json:"user_work_unit"`
+	DateJoinedChurch             time.Time           `json:"date_joined_church"`
+	FamilyHead                   bool                `json:"family_head"`
+	UserCampus                   string              `json:"user_campus"`
+	InstagramHandle              string              `json:"instagram_handle"`
+	FamilyMembers                []string            `json:"family_members"`
+	PhoneNumber                  string              `json:"phone_number"`
+	Profession                   string              `json:"profession"`
+	UserHouseAddress             string              `json:"user_house_address"`
+	CampusState                  string              `json:"campus_state"`
+	CampusCountry                string              `json:"campus_country"`
+	EmergencyContactName         string              `json:"emergency_contact_name"`
+	EmergencyContactPhone        string              `json:"emergency_contact_phone"`
+	EmergencyContactEmail        string              `json:"emergency_contact_email"`
+	EmergencyContactRelationship string              `json:"emergency_contact_relationship"`
+	Role                         *primitive.ObjectID `json:"role"`
+	CreatedAt                    time.Time           `json:"date_joined"`
+	UpdatedAt                    time.Time           `json:"date_updated"`
+}
+
 type LoginResponse struct {
 	AccessToken  string      `json:"access_token"`
 	RefreshToken string      `json:"refresh_token"`
@@ -65,6 +101,13 @@ type LoginResponse struct {
 type TokenResponse struct {
 	AccessToken  string `json:"access_token"`
 	RefreshToken string `json:"refresh_token"`
+}
+
+type CreatePasswordResponse struct {
+	UserID      string    `json:"user_id"`
+	Email       string    `json:"email"`
+	DateCreated time.Time `json:"date_joined"`
+	DateUpdated time.Time `json:"date_updated"`
 }
 
 type UserSummary struct {
@@ -120,22 +163,22 @@ type QRCodeResponse struct {
 
 // Role DTOs
 type CreateRoleRequest struct {
-	RoleName        string `json:"role_name" validate:"required,min=2,max=50"`
-	RoleDescription string `json:"role_description" validate:"required,min=5,max=200"`
-	Permissions     string `json:"permissions" validate:"required"`
+	RoleName        string   `json:"role_name" validate:"required,min=2,max=50"`
+	RoleDescription string   `json:"role_description" validate:"required,min=5,max=200"`
+	Permissions     []string `json:"permissions" validate:"required"`
 }
 
 type UpdateRoleRequest struct {
-	RoleName        string `json:"role_name" validate:"omitempty,min=2,max=50"`
-	RoleDescription string `json:"role_description" validate:"omitempty,min=5,max=200"`
-	Permissions     string `json:"permissions" validate:"omitempty"`
+	RoleName        string   `json:"role_name" validate:"omitempty,min=2,max=50"`
+	RoleDescription string   `json:"role_description" validate:"omitempty,min=5,max=200"`
+	Permissions     []string `json:"permissions" validate:"omitempty"`
 }
 
 type RoleResponse struct {
 	ID              string    `json:"id"`
 	RoleName        string    `json:"role_name"`
 	RoleDescription string    `json:"role_description"`
-	Permissions     string    `json:"permissions"`
+	Permissions     []string  `json:"permissions"`
 	TotalMembers    int       `json:"total_members"`
 	DateAdded       time.Time `json:"date_added"`
 	DateUpdated     time.Time `json:"date_updated"`
@@ -245,35 +288,36 @@ type PaginatedAnnouncementsResponse struct {
 
 // Family Member DTOs
 type CreateFamilyMemberRequest struct {
-	FamilyMemberName         string     `json:"family_name" validate:"required,min=2,max=100"`
-	FamilyMemberEmail        string     `json:"family_email" validate:"omitempty,email"`
-	FamilyMemberRelationship string     `json:"family_relationship" validate:"required"`
-	FamilyMemberPhone        string     `json:"family_phone_number" validate:"omitempty,e164"`
-	FamilyMemberDateOfBirth  *time.Time `json:"family_member_date_of_birth"`
-	FamilyMemberGender       string     `json:"family_member_gender" validate:"omitempty,oneof=Male Female Other"`
-	FamilyMemberOccupation   string     `json:"family_member_occupation"`
+	FamilyMemberName         string `json:"name" validate:"required,min=2,max=100"`
+	FamilyMemberEmail        string `json:"email" validate:"omitempty,email"`
+	FamilyMemberRelationship string `json:"relationship" validate:"required"`
+	FamilyMemberPhone        string `json:"phone_number" validate:"omitempty,e164"`
+	FamilyMemberDateOfBirth  string `json:"date_of_birth"`
+	FamilyMemberGender       string `json:"gender" validate:"omitempty,oneof=Male Female Other"`
+	FamilyMemberOccupation   string `json:"occupation"`
 }
 
 type UpdateFamilyMemberRequest struct {
-	FamilyMemberName         string     `json:"family_member_name" validate:"omitempty,min=2,max=100"`
-	FamilyMemberPhone        string     `json:"family_member_phone" validate:"omitempty,e164"`
-	FamilyMemberEmail        string     `json:"family_member_email" validate:"omitempty,email"`
-	FamilyMemberRelationship string     `json:"family_member_relationship" validate:"omitempty,min=2,max=50"`
-	FamilyMemberDateOfBirth  *time.Time `json:"family_member_date_of_birth"`
-	FamilyMemberGender       string     `json:"family_member_gender" validate:"omitempty,oneof=Male Female Other"`
-	FamilyMemberOccupation   string     `json:"family_member_occupation"`
+	FamilyMemberName         string `json:"name" validate:"required,min=2,max=100"`
+	FamilyMemberEmail        string `json:"email" validate:"omitempty,email"`
+	FamilyMemberRelationship string `json:"relationship" validate:"required"`
+	FamilyMemberPhone        string `json:"phone_number" validate:"omitempty,e164"`
+	FamilyMemberDateOfBirth  string `json:"date_of_birth"`
+	FamilyMemberGender       string `json:"gender" validate:"omitempty,oneof=Male Female Other"`
+	FamilyMemberOccupation   string `json:"occupation"`
 }
 
 type FamilyMemberResponse struct {
-	ID                       string     `json:"id"`
-	FamilyMemberName         string     `json:"family_name" validate:"required,min=2,max=100"`
-	FamilyMemberEmail        string     `json:"family_email" validate:"omitempty,email"`
-	FamilyMemberRelationship string     `json:"family_relationship" validate:"required"`
-	FamilyMemberPhone        string     `json:"family_phone_number" validate:"omitempty,e164"`
-	FamilyMemberDateOfBirth  *time.Time `json:"family_member_date_of_birth"`
-	FamilyMemberGender       string     `json:"family_member_gender" validate:"omitempty,oneof=Male Female Other"`
-	FamilyMemberOccupation   string     `json:"family_member_occupation"`
-	DateAdded                time.Time  `json:"date_added"`
+	ID                       string    `json:"id"`
+	FamilyMemberName         string    `json:"family_member_name" validate:"required,min=2,max=100"`
+	FamilyMemberEmail        string    `json:"family_member__email" validate:"omitempty,email"`
+	FamilyMemberRelationship string    `json:"family_member__relationship" validate:"required"`
+	FamilyMemberPhone        string    `json:"family_member_phone_number" validate:"omitempty,e164"`
+	FamilyMemberDateOfBirth  time.Time `json:"family_member_date_of_birth"`
+	FamilyMemberGender       string    `json:"family_member_gender" validate:"omitempty,oneof=Male Female Other"`
+	FamilyMemberOccupation   string    `json:"family_member_occupation"`
+	FamilyMemberHead         string    `json:"family_head"`
+	DateAdded                time.Time `json:"date_added"`
 }
 
 type PaginatedFamilyMembersResponse struct {
@@ -388,4 +432,11 @@ type Pagination struct {
 	Limit      int `json:"limit"`
 	Total      int `json:"total"`
 	TotalPages int `json:"total_pages"`
+}
+type WorkUnit struct {
+	Worship   string `json:"worship_team"`
+	Ushering  string `json:"ushering"`
+	Protocol  string `json:"protocol"`
+	Media     string `json:"media"`
+	Pastorate string `json:"pastorate"`
 }

@@ -83,7 +83,7 @@ func (s *UserService) GetAllUsers(ctx context.Context, page, limit int) (*dto.Pa
 			UserHouseAddress:             user.UserHouseAddress,
 			PhoneNumber:                  user.PhoneNumber,
 			InstagramHandle:              user.InstagramHandle,
-			FamilyMemberID:               user.FamilyMemberID,
+			FamilyMembers:                user.FamilyMembers,
 			DateJoined:                   user.DateJoined,
 			DateUpdated:                  user.DateUpdated,
 			Role:                         user.Role,

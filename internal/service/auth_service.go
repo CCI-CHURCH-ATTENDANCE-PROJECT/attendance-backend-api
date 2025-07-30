@@ -77,7 +77,7 @@ func (s *AuthService) BasicRegister(ctx context.Context, req *dto.BasicRegisterR
 	}, nil
 }
 
-func (s *AuthService) CompleteRegister(ctx context.Context, req *dto.CompleteRegisterRequest) (*dto.BasicRegisterResponse, error) {
+func (s *AuthService) CompleteRegister(ctx context.Context, req *dto.CompleteRegisterRequest) (*dto.CompleteRegisterResponse, error) {
 	// Check if user already exists
 	existingUser, err := s.userRepo.GetByEmail(ctx, req.Email)
 	if err != nil {
@@ -89,7 +89,7 @@ func (s *AuthService) CompleteRegister(ctx context.Context, req *dto.CompleteReg
 
 	// Validate password strength
 	if !utils.IsValidPassword(req.Password) {
-		return nil, errors.New("password must be at least 8 characters long and contain uppercase, lowercase, and number")
+		return nil, errors.New("password must be at least 8 characters long and contain uppercase, lowercase, special character and at  least a number")
 	}
 
 	// Hash password
@@ -104,10 +104,15 @@ func (s *AuthService) CompleteRegister(ctx context.Context, req *dto.CompleteReg
 		return nil, fmt.Errorf("failed to generate user ID: %w", err)
 	}
 
+	// Parse DateOf Birth sent as string to DateTime Format
+	dateOfBirth, _ := time.Parse("2025-4-11", req.DateOfBirth)
+
+	// Parse date Joined church from string to date time format
+	dateJoinedChurch, _ := time.Parse("2025-4-11", req.DateJoinedChurch)
+
 	//Generate QRCode image and QRCode token for the user and save it in the QRCodeTonken fields
 
 	//A logic to decide if the user will have admin set to true or false
-
 	// Create user with complete information
 	user := &models.User{
 		UserID:                       userID,
@@ -116,19 +121,19 @@ func (s *AuthService) CompleteRegister(ctx context.Context, req *dto.CompleteReg
 		FirstName:                    req.FirstName,
 		LastName:                     req.LastName,
 		Bio:                          req.Bio,
-		DateOfBirth:                  req.DateOfBirth,
+		DateOfBirth:                  dateOfBirth,
 		Gender:                       req.Gender,
 		Member:                       req.Member,
 		Visitor:                      req.Visitor,
 		Usher:                        req.Usher,
-		Admin:                        req.Admin,
+		Admin:                        false,
 		UserWorkDepartment:           req.UserWorkDepartment,
-		DateJoinedChurch:             req.DateJoinedChurch,
+		DateJoinedChurch:             dateJoinedChurch,
 		FamilyHead:                   req.FamilyHead,
 		UserCampus:                   req.UserCampus,
 		PhoneNumber:                  req.PhoneNumber,
 		InstagramHandle:              req.InstagramHandle,
-		FamilyMemberID:               req.FamilyMemberID,
+		FamilyMembers:                req.FamilyMembers,
 		Profession:                   req.Profession,
 		UserHouseAddress:             req.UserHouseAddress,
 		CampusState:                  req.CampusState,
@@ -146,10 +151,35 @@ func (s *AuthService) CompleteRegister(ctx context.Context, req *dto.CompleteReg
 		return nil, fmt.Errorf("failed to create user: %w", err)
 	}
 
-	return &dto.BasicRegisterResponse{
-		UserID:    user.UserID,
-		Email:     user.Email,
-		CreatedAt: user.DateJoined,
+	return &dto.CompleteRegisterResponse{
+		UserID:                       user.UserID,
+		FirstName:                    user.FirstName,
+		LastName:                     user.LastName,
+		Email:                        user.Email,
+		Bio:                          user.Bio,
+		DateOfBirth:                  user.DateOfBirth,
+		Gender:                       user.Gender,
+		Member:                       user.Member,
+		Visitor:                      user.Visitor,
+		Usher:                        user.Usher,
+		UserWorkDepartment:           user.UserWorkDepartment,
+		DateJoinedChurch:             user.DateJoinedChurch,
+		FamilyHead:                   user.FamilyHead,
+		UserCampus:                   user.UserCampus,
+		CampusState:                  user.CampusState,
+		CampusCountry:                user.CampusCountry,
+		Profession:                   user.Profession,
+		UserHouseAddress:             user.UserHouseAddress,
+		PhoneNumber:                  user.PhoneNumber,
+		InstagramHandle:              user.InstagramHandle,
+		FamilyMembers:                user.FamilyMembers,
+		CreatedAt:                    user.DateJoined,
+		UpdatedAt:                    user.DateUpdated,
+		Role:                         user.Role,
+		EmergencyContactName:         user.EmergencyContactName,
+		EmergencyContactPhone:        user.EmergencyContactPhone,
+		EmergencyContactEmail:        user.EmergencyContactEmail,
+		EmergencyContactRelationship: user.EmergencyContactRelationship,
 	}, nil
 }
 

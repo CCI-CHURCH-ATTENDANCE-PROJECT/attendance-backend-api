@@ -15,14 +15,14 @@ type User struct {
 	Email                        string              `bson:"email" json:"email" validate:"required,email"`
 	Password                     string              `bson:"user_password" json:"-" validate:"required,min=8"`
 	Bio                          string              `bson:"bio" json:"bio"`
-	DateOfBirth                  string              `bson:"date_of_birth" json:"date_of_birth"`
+	DateOfBirth                  time.Time           `bson:"date_of_birth" json:"date_of_birth"`
 	Gender                       string              `bson:"gender" json:"gender" validate:"oneof=Male Female Other"`
 	Member                       bool                `bson:"member" json:"member"`
 	Visitor                      bool                `bson:"visitor" json:"visitor"`
 	Usher                        bool                `bson:"usher" json:"usher"`
 	Admin                        bool                `bson:"admin" json:"admin"`
-	UserWorkDepartment           *primitive.ObjectID `bson:"user_work_department,omitempty" json:"user_work_department"`
-	DateJoinedChurch             string              `bson:"date_joined_church" json:"date_joined_church"`
+	UserWorkDepartment           string              `bson:"user_work_department,omitempty" json:"user_work_department"`
+	DateJoinedChurch             time.Time           `bson:"date_joined_church" json:"date_joined_church"`
 	QRCodeToken                  string              `bson:"qr_code_token" json:"qr_code_token"`
 	QRCodeImage                  string              `bson:"qr_code_image" json:"qr_code_image"`
 	FamilyHead                   bool                `bson:"family_head" json:"family_head"`
@@ -33,7 +33,7 @@ type User struct {
 	UserHouseAddress             string              `bson:"user_house_address" json:"user_house_address"`
 	PhoneNumber                  string              `bson:"phone_number" json:"phone_number" validate:"omitempty,e164"`
 	InstagramHandle              string              `bson:"instagram_handle" json:"instagram_handle"`
-	FamilyMemberID               uint                `bson:"family_member_id" json:"family_member_id"`
+	FamilyMembers                []string            `bson:"family_member_id" json:"family_member_id"`
 	DateJoined                   time.Time           `bson:"date_joined" json:"date_joined"`
 	DateUpdated                  time.Time           `bson:"date_updated" json:"date_updated"`
 	Role                         *primitive.ObjectID `bson:"role,omitempty" json:"role"`
@@ -51,13 +51,13 @@ type UserResponse struct {
 	LastName                     string              `json:"lname"`
 	Email                        string              `json:"email"`
 	Bio                          string              `json:"bio"`
-	DateOfBirth                  string              `json:"date_of_birth"`
+	DateOfBirth                  time.Time           `json:"date_of_birth"`
 	Gender                       string              `json:"gender"`
 	Member                       bool                `json:"member"`
 	Visitor                      bool                `json:"visitor"`
 	Usher                        bool                `json:"usher"`
-	UserWorkDepartment           *primitive.ObjectID `json:"user_work_department"`
-	DateJoinedChurch             string              `json:"date_joined_church"`
+	UserWorkDepartment           string              `json:"user_work_department"`
+	DateJoinedChurch             time.Time           `json:"date_joined_church"`
 	QRCodeToken                  string              `json:"qr_code_token"`
 	QRCodeImage                  string              `json:"qr_code_image"`
 	FamilyHead                   bool                `json:"family_head"`
@@ -68,7 +68,7 @@ type UserResponse struct {
 	UserHouseAddress             string              `json:"user_house_address"`
 	PhoneNumber                  string              `json:"phone_number"`
 	InstagramHandle              string              `json:"instagram_handle"`
-	FamilyMemberID               uint                `json:"family_member_id"`
+	FamilyMembers                []string            `json:"family_member_id"`
 	DateJoined                   time.Time           `json:"date_joined"`
 	DateUpdated                  time.Time           `json:"date_updated"`
 	Role                         *primitive.ObjectID `json:"role"`
@@ -93,15 +93,15 @@ type Attendance struct {
 // FamilyMember represents the family member model
 type FamilyMember struct {
 	ID                       primitive.ObjectID `bson:"_id,omitempty" json:"id"`
-	FamilyHead               primitive.ObjectID `bson:"family_head" json:"family_head" validate:"required"`
+	FamilyHead               string             `bson:"family_head" json:"family_head" validate:"required"`
 	FamilyMemberName         string             `bson:"family_members" json:"family_members" validate:"required"`
 	DateJoined               time.Time          `bson:"date_joined" json:"date_joined"`
 	FamilyMemberPhone        string             `bson:"phone" json:"phone" validate:"required,e164"`
 	FamilyMemberEmail        string             `bson:"email" json:"email" validate:"required,email"`
 	FamilyMemberRelationship string             `bson:"relationship" json:"relationship" validate:"required"`
-	FamilyMemberDateOfBirth  *time.Time         `bson:"date_of_birth" json:"date_of_birth" validate:"required"`
+	FamilyMemberDateOfBirth  time.Time          `bson:"date_of_birth" json:"date_of_birth" validate:"required"`
 	FamilyMemberGender       string             `bson:"gender" json:"gender" validate:"oneof=Male Female Other"`
-	FamilyMemberOccupation   string             `bson:"occupation" json:"occupation" validate:"required"`
+	FamilyMemberOccupation   string             `bson:"occupation" json:"occupation"`
 	DateAdded                time.Time          `bson:"date_added" json:"date_added"`
 }
 
@@ -157,9 +157,14 @@ type Role struct {
 	RoleName        string             `bson:"role_name" json:"role_name" validate:"required,min=2,max=50"`
 	RoleDescription string             `bson:"role_description" json:"role_description" validate:"required,min=5,max=200"`
 	TotalMembers    int                `bson:"total_members" json:"total_members"`
-	Permissions     string             `bson:"permissions" json:"permissions" validate:"required"`
+	Permissions     []string           `bson:"permissions" json:"permissions" validate:"required"`
 	DateAdded       time.Time          `bson:"date_added" json:"date_added"`
 	DateUpdated     time.Time          `bson:"date_updated" json:"date_updated"`
+}
+
+type RolesAndPermissions struct {
+	Roles                []Role   `json:"roles"`
+	AvailablePermissions []string `json:"available_permissions"`
 }
 
 // LocalChurch represents the local church model
@@ -226,4 +231,20 @@ type Pagination struct {
 	Limit      int `json:"limit"`
 	Total      int `json:"total"`
 	TotalPages int `json:"total_pages"`
+}
+
+type Permissions struct {
+	CanViewDashboard string `json:"can_view_dashboard"`
+	CanCreateUser    string `json:"can_create_user"`
+	CanEditUser      string `json:"can_edit_user"`
+	CanDeleteUser    string `json:"can_delete_user"`
+	CanViewAnalytics string `json:"can_view_analytics"`
+}
+
+type WorkUnit struct {
+	Worship   string `json:"worship_team"`
+	Ushering  string `json:"ushering"`
+	Protocol  string `json:"protocol"`
+	Media     string `json:"media"`
+	Pastorate string `json:"pastorate"`
 }

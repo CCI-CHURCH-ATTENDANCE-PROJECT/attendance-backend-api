@@ -141,9 +141,9 @@ func (s *RoleService) UpdateRole(ctx context.Context, id string, req *dto.Update
 		role.RoleDescription = req.RoleDescription
 	}
 
-	if req.Permissions != "" {
-		role.Permissions = req.Permissions
-	}
+	// if req.Permissions != "" {
+	// 	role.Permissions = req.Permissions
+	// }
 
 	role.DateUpdated = time.Now()
 

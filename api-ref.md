@@ -20,7 +20,7 @@
   ```javascript
   let headersList = {
       "Accept": "*/*",
-      "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+      "User-Agent": "Local Client",
       "Content-Type": "application/json"
       }
 
@@ -58,41 +58,42 @@
 - **Body:** (fields as required for completion by the DTO, see sample request body below for guidance)
 - **Sample Request**
   ```javascript
-  let headersList = {
+    let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local API Client (local)",
     "Content-Type": "application/json"
     }
 
     let bodyContent = JSON.stringify({
-      "FirstName": "Seun",
-      "LastName": "Yusuf",
-      "Email": "yusuf@gmail.com",
-      "Password": "Graphene@work3",
-      "Bio": "This is a complete registration for Seun test",
-      "DateOfBirth": "1996-12-11",
-      "Gender": "Male",
-      "Member": true,
-      "Visitor": false,
-      "Usher": false,
-      "Admin": false,
-      "DateJoinedChurch": "2002-11-10",
-      "FamilyHead": false,
-      "UserCampus": "Utako",
-      "CampusState": "Abuja",
-      "CampusCountry": "Nigeria",
-      "UserWorkDepartment":"3",
-      "Profession": "Painter",
-      "UserHouseAddress": "Maximiseing the Maitama penthouse",
-      "PhoneNumber": "08155679876",
-      "InstagraHhandle": "@testing",
-      "FamilyMemberId": {
-        "$numberLong": "1"
-      },
-      "EmergencyContatcName": "Michaela",
-      "EmergencyContactPhone": "Suleman",
-      "EmergencyContactEmail": "suleman@example.com",
-      "EmergencyCOntactRelationship": "Brother"
+      "fname": "Victoria",
+      "lname": "Daniel",
+      "email": "sadaniyi@gmail.com",
+      "password": "Graphene@work3",
+      "bio": "This is a complete registration for Seun test",
+      "date_of_birth": "1996-12-11",
+      "gender": "Male",
+      "member": true,
+      "visitor": false,
+      "usher": false,
+      "date_joined_church": "2022-11-10",
+      "family_head": false,
+      "user_campus": "Utako",
+      "campus_state": "Abuja",
+      "campus_country": "Nigeria",
+      "user_work_unit": "worship",
+      "profession": "Painter",
+      "user_house_address": "Maximiseing the Maitama penthouse",
+      "phone_number": "2348155679876",
+      "instagram_handle": "@testing",
+      "family_members": [
+        1,
+        3,
+        4
+      ],
+      "emergency_contact_name": "Michaela",
+      "emergency_contact_phone": "Suleman",
+      "emergency_contact_email": "suleman@example.com",
+      "emergency_contact_relationship": "Brother"
     });
 
     let response = await fetch("http://localhost:8080/api/v1/auth/register/complete", { 
@@ -104,19 +105,49 @@
     let data = await response.text();
     console.log(data);
 
+
 - **Sample Response**
   ```json
     {
       "success": true,
       "message": "User registered successfully",
       "data": {
-        "user_id": "CCIMRB-89489",
-        "email": "yusuf@gmail.com",
-        "created_at": "2025-07-12T11:12:34.738426+01:00"
+        "user_id": "CCIMRB-66116",
+        "email": "sadaniyi@gmail.com",
+        "FirstName": "Victoria",
+        "LastName": "Daniel",
+        "bio": "This is a complete registration for Seun test",
+        "date_of_birth": "0001-01-01T00:00:00Z",
+        "gender": "Male",
+        "member": true,
+        "visitor": false,
+        "usher": false,
+        "admin": false,
+        "user_work_unit": "worship",
+        "date_joined_church": "0001-01-01T00:00:00Z",
+        "family_head": false,
+        "user_campus": "Utako",
+        "instagram_handle": "@testing",
+        "family_members": [
+          1,
+          3,
+          4
+        ],
+        "phone_number": "2348155679876",
+        "profession": "Painter",
+        "user_house_address": "Maximiseing the Maitama penthouse",
+        "campus_state": "Abuja",
+        "campus_country": "Nigeria",
+        "emergency_contact_name": "Michaela",
+        "emergency_contact_phone": "Suleman",
+        "emergency_contact_email": "suleman@example.com",
+        "emergency_contact_relationship": "Brother",
+        "role": null,
+        "date_joined": "2025-07-24T18:36:02.849564+01:00",
+        "date_updated": "2025-07-24T18:36:02.849564+01:00"
       }
     }
 
-### I still need to Check the complete register endpoint for some fields that are not saving properly? Also check and standardise the way family member list should be stored for a family head user
 
 
 
@@ -157,8 +188,7 @@
       "success": true,
       "message": "Login successful",
       "data": {
-        "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTg5NDg5IiwiZW1haWwiOiJ5dXN1ZkBnbWFpbC5jb20iLCJhZG1pbiI6dHJ1ZSwiaXNzIjoiY2h1cmNoLWF0dGVuZGFuY2UtYXBpIiwiZXhwIjoxNzUyOTIwMDc1LCJpYXQiOjE3NTI5MTkxNzV9.s4fiE2IjZwMQmeN4Q5DiQn10b4ugRnWRJc7eOcEsvnY",
-        "refresh_token": "0skyZk8anEz8xewtj4qNneWd8xQd09jvNA2RWVuzqr4=",
+        "access_token": "Bearer <JWT_ACCESS_TOKEN>",
         "user": {
           "user_id": "CCIMRB-89489",
           "fname": "Seun",
@@ -181,7 +211,7 @@
   ```javascript
       let headersList = {
       "Accept": "*/*",
-      "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+      "User-Agent": "Local Client",
       "Content-Type": "application/json"
       }
 
@@ -220,7 +250,7 @@
     let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTg5NDg5IiwiZW1haWwiOiJ5dXN1ZkBnbWFpbC5jb20iLCJhZG1pbiI6dHJ1ZSwiaXNzIjoiY2h1cmNoLWF0dGVuZGFuY2UtYXBpIiwiZXhwIjoxNzUyOTIwMzgwLCJpYXQiOjE3NTI5MTk0ODB9.DZvlKG6Jymfp3sFOXIWvmk6bVCykv4K42IpIOvlsjnM"
+    "Authorization": "Bearer <JWT_ACCESS_TOKEN>"
     }
 
     let response = await fetch("http://localhost:8080/api/v1/logout", { 
@@ -251,7 +281,7 @@
     let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTg5NTI5MTk0ODB9.DZvlKG6Jymfp3sFOXIWvmk6bVCykv4K42IpIOvlsjnM"
+    "Authorization": "Bearer <JWT_ACCESS_TOKEN>"
     }
 
     let response = await fetch("http://localhost:8080/api/v1/users", { 
@@ -425,7 +455,7 @@
     let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTg5NDg5Tk0ODB9.DZvlKG6Jymfp3sFOXIWvmk6bVCykv4K42IpIOvlsjnM"
+    "Authorization": "Bearer <JWT_ACCESS_TOKEN>"
     }
 
     let response = await fetch("http://localhost:8080/api/v1/users/search?q=CCIMRB-5354", { 
@@ -468,7 +498,7 @@
     let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLT3NTI5MjA1MjB9.NanXZwoB6Ad6T20Kwi8ua1TO79PlK77F68cVIdsKcWw"
+    "Authorization": "Bearer <JWT_ACCESS_TOKEN>"
     }
 
     let response = await fetch("http://localhost:8080/api/v1/users/filter?field=family_head&value=true", { 
@@ -520,7 +550,7 @@
     let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTg55MjA1MjB9.NanXZwoB6Ad6T20Kwi8ua1TO79PlK77F68cVIdsKcWw",
+    "Authorization": "Bearer <JWT_ACCESS_TOKEN>",
     "Content-Type": "application/json"
     }
 
@@ -568,7 +598,7 @@
   let headersList = {
       "Accept": "*/*",
       "User-Agent": "Client name",
-      "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTcwNjk4IiwiZTIwMDZ9.dAkT3Bx1hRcpYbuHUratTpdFgrwjWw_pm2X0UQ2K1Xw",
+      "Authorization": "Bearer <JWT_ACCESS_TOKEN>",
       "Content-Type": "application/json"
       }
 
@@ -614,7 +644,7 @@
       let headersList = {
       "Accept": "*/*",
       "User-Agent": "Local Client",
-      "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTJpYXQiOjE3NTI5MjA4NDB9.WfzZwyRLxaEVccAw_3AmEPvrRG1N0Ztt8_kHZLt1wOc"
+      "Authorization": "Bearer <JWT_ACCESS_TOKEN>"
       }
 
       let response = await fetch("http://localhost:8080/api/v1/attendance/history", { 
@@ -673,8 +703,8 @@
   ```javascript
     let headersList = {
     "Accept": "*/*",
-    "User-Agent": "Thunder Client (https://www.thunderclient.com)",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTg5NDg5IiwiZW1haWwiOiJ5dXN1ZkBnbWFpbC5jb20iLCJhZG1pbiI6dHJ1ZSwiaXNzIjoiY2h1cmNoLWF0dGVuZGFuY2UtYXBpIiwiZXhwIjoxNzUyOTIxNzQwLCJpYXQiOjE3NTI5MjA4NDB9.WfzZwyRLxaEVccAw_3AmEPvrRG1N0Ztt8_kHZLt1wOc"
+    "User-Agent": "Local Client",
+    "Authorization": "Bearer <JWT_ACCESS_TOKEN>"
     }
 
     let response = await fetch("http://localhost:8080/api/v1/attendance/analytics?date=2025-07-19", { 
@@ -714,7 +744,7 @@
     let headersList = {
         "Accept": "*/*",
         "User-Agent": "client name",
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTcwNjk4TIzMTIwMDZ9.dAkT3Bx1hRcpYbuHUratTpdFgrwjWw_pm2X0UQ2K1Xw",
+        "Authorization": "Bearer <JWT_ACCESS_TOKEN>",
         "Content-Type": "application/json"
         }
 
@@ -757,8 +787,8 @@
     ```javascript
     let headersList = {
     "Accept": "*/*",
-    "User-Agent": "Thunder Client (https://www.thunderclient.com)",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJaWwiOiJ5dXN1ZkBnbWFpbC5jb20iLCJhZG1pbiI6dHJ1ZSwiaXNzIjoiY2h1cmNoLWF0dGVuZGFuY2UtYXBpIiwiZXhwIjoxNzUyMzE3MTMyLCJpYXQiOjE3NTIzMTYyMzJ9.aqqQYwNa8RQ5VweqEJT3Cg4bqEfym45MQ4iYGWwLpYA",
+    "User-Agent": "Local Client (local)",
+    "Authorization": "Bearer <JWT_ACCESS_TOKEN>",
     "Content-Type": "application/json"
     }
 
@@ -808,7 +838,7 @@
     let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTg5NDg5IiwiZW1haWwiOiJ5dXN1ZkBnbWFpbC5jb20iLCJhZG1pbiI6dHJ1ZSwiaXNzIjoiY2h1cmNoLWF0dGVuZGFuY2UtYXBpIiwiZXhwIjoxNzUyMzE3MTMyLCJpYXQiOjE3NTIzMTYyMzJ9.aqqQYwNa8RQ5VweqEJT3Cg4bqEfym45MQ4iYGWwLpYA"
+    "Authorization": "Bearer <JWT_ACCESS_TOKEN>"
     }
 
     let response = await fetch("http://localhost:8080/api/v1/roles", { 
@@ -886,7 +916,7 @@
       let headersList = {
       "Accept": "*/*",
       "User-Agent": "Local Client",
-      "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTg5MTcxODN9.6grb-nkJqQPz1CU7Ch79T4DLMsJQeqn__AdfqmZcE6c",
+      "Authorization": "Bearer <JWT_ACCESS_TOKEN>",
       "Content-Type": "application/json"
       }
 
@@ -931,7 +961,7 @@
       let headersList = {
       "Accept": "*/*",
       "User-Agent": "Local Client",
-      "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTg5NDg5IiwiZW1haWwiOiJ5dXN1ZkBnbWFpbC5jb20iLCJhZG1pbiI6dHJ1ZSwiaXNzIjoiY2h1cmNoLWF0dGVuZGFuY2UtYXBpIiwiZXhwIjoxNzUyMzE4ODE1LCJpYXQiOjE3NTIzMTc5MTV9.WKlKhQG5CITr6fRVWPimMR1dh6mAdn545PZ-u7ur9MM"
+      "Authorization": "Bearer <JWT_ACCESS_TOKEN>"
       }
 
       let response = await fetch("http://localhost:8080/api/v1/roles/68723efd949fcaa17c3b88ec", { 
@@ -969,8 +999,8 @@
   ```javascript
       let headersList = {
       "Accept": "*/*",
-      "User-Agent": "Thunder Client (https://www.thunderclient.com)",
-      "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTg5NDg5IiwiZW1haWwiOiJ5dXN1ZkBnbWFpbC5jb20iLCJhZG1pbiI6dHJ1ZSwiaXNzIjoiY2h1cmNoLWF0dGVuZGFuY2UtYXBpIiwiZXhwIjoxNzUyNTgyNzc3LCJpYXQiOjE3NTI1ODE4Nzd9.1rFHpRzmT5YAoyvbh22rbJWxcdZpjakOwffFlVUMxWw",
+      "User-Agent": "Your Client",
+      "Authorization": "Bearer <JWT_ACCESS_TOKEN>",
       "Content-Type": "application/json"
       }
 
@@ -1026,7 +1056,7 @@
         let headersList = {
         "Accept": "*/*",
         "User-Agent": "Local Client",
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJC1NzgxOTJ9.Jj41tDRp-R8U-UiXt_psJsVIhqm0d5AsnwxluWVb9ZY"
+        "Authorization": "Bearer <JWT_ACCESS_TOKEN>"
         }
 
         let response = await fetch("http://localhost:8080/api/v1/sermons", { 
@@ -1107,7 +1137,7 @@
     let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTg5NDgDV9.Rt3kV6Phl2fGsfm-IYRTWJXQL4aYH0ytnJwYrbEGAFI",
+    "Authorization": "Bearer <JWT_ACCESS_TOKEN>",
     "Content-Type": "application/json"
     }
 
@@ -1162,7 +1192,7 @@
       let headersList = {
       "Accept": "*/*",
       "User-Agent": "Local Client",
-      "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTg5N5MDV9.Rt3kV6Phl2fGsfm-IYRTWJXQL4aYH0ytnJwYrbEGAFI"
+      "Authorization": "Bearer <JWT_ACCESS_TOKEN>"
       }
 
       let response = await fetch("http://localhost:8080/api/v1/sermons/687647e2b58062ebfdfc59d8", { 
@@ -1198,7 +1228,7 @@
     let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJ3NTI4NTM4OTh9.aK59e2tpNwv88r6-eG1qccRhMtP8Cn6JXw4fTFisFd8",
+    "Authorization": "Bearer <JWT_ACCESS_TOKEN>",
     "Content-Type": "application/json"
     }
 
@@ -1330,7 +1360,7 @@
     let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client",
-    "Authorization": "Bearer eyJhbGciOY0MDV9.wwWPaZ1gsd8zNHPL3XszXMe72NXny56QOSxDC6_Bbuw"
+    "Authorization": "Bearer <JWT_ACCESS_TOKEN>"
     }
 
     let response = await fetch("http://localhost:8080/api/v1/announcements/687a701f6e2ce0eefa473a9e", { 
@@ -1377,7 +1407,7 @@
     let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTE3NTI4NTQ4MzV9.OBx3aUZp7dv0zD7wtIcs5CH_2XggcHnKqU1mym3jrEY",
+    "Authorization": "Bearer <JWT_ACCESS_TOKEN>",
     "Content-Type": "application/json"
     }
 
@@ -1435,8 +1465,8 @@
   ```javascript
     let headersList = {
     "Accept": "*/*",
-    "User-Agent": "Thunder Client (https://www.thunderclient.com)",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTg5NY0MDV9.wwWPaZ1gsd8zNHPL3XszXMe72NXny56QOSxDC6_Bbuw"
+    "User-Agent": "Local Client",
+    "Authorization": "Bearer <JWT_ACCESS_TOKEN>"
     }
 
     let response = await fetch("http://localhost:8080/api/v1/announcements/687a701f6e2ce0eefa473a9e", { 
@@ -1469,10 +1499,61 @@
   | relationship  | string | Yes      | Relationship to user       |
   | date_joined   | string | No       | Date joined (YYYY-MM-DD)   |
 
+- **Sample Request:**
+  ```javascript
+      let headersList = {
+      "Accept": "*/*",
+      "User-Agent": "Local Client",
+      "Authorization": "Bearer <JWT_ACCESS_TOKEN>",
+      "Content-Type": "application/json"
+      }
+
+      let bodyContent = JSON.stringify({
+        "name": "Sunday Yusuf",
+        "email": "sun@example.com",
+        "relationship": "brother",
+        "phone_number": "+2349809876590",
+        "date_of_birth": "2000-04-11",
+        "gender": "Female",
+        "occupation": "Software Designer"
+      });
+
+      let response = await fetch("http://localhost:8080/api/v1/family-members", { 
+        method: "POST",
+        body: bodyContent,
+        headers: headersList
+      });
+
+      let data = await response.text();
+      console.log(data);
+
+
+- **Sample Response:**
+  ```json
+    {
+    "code": "FAMILY_MEMBER_CREATED",
+    "message": "Family member created successfully",
+    "data": {
+      "id": "68827b664ac218d46f9ab61d",
+      "family_member_name": "Sunday Yusuf",
+      "family_member__email": "sun@example.com",
+      "family_member__relationship": "brother",
+      "family_member_phone_number": "+2349809876590",
+      "family_member_date_of_birth": "0001-01-01T00:00:00Z",
+      "family_member_gender": "Female",
+      "family_member_occupation": "Software Designer",
+      "family_head": "",
+      "date_added": "2025-07-24T19:28:54.166087+01:00"
+    }
+  }
+
 ### Update Family Member
 - **PUT** `/family-members/:id`
 - **Headers:** `Authorization: Bearer <JWT_ACCESS_TOKEN>`
 - **Body:** (same as create)
+
+
+
 
 ### Delete Family Member
 - **DELETE** `/family-members/:id`
@@ -1497,7 +1578,7 @@
     let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTg5NDg5IiwiZW19.b2HRcQgcKWYPVpeWpqNsW7tZV12OwXc8xMgckNIHwYk",
+    "Authorization": "Bearer <JWT_ACCESS_TOKEN>",
     "Content-Type": "application/json"
     }
 
@@ -1568,7 +1649,7 @@
     let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client ",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJOjE3NTI4NjEzOTd9.VojBn-hyTxUpkj7hHgCXjEcFvNIEPJtLqcoaJG52ztI",
+    "Authorization": "Bearer <JWT_ACCESS_TOKEN>",
     "Content-Type": "application/json"
     }
 
@@ -1638,7 +1719,7 @@
     let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTI4NjEzOTd9.VojBn-hyTxUpkj7hHgCXjEcFvNIEPJtLqcoaJG52ztI"
+    "Authorization": "Bearer <JWT_ACCESS_TOKEN>"
     }
 
     let response = await fetch("http://localhost:8080/api/v1/churches/687a8affa4380825e6c2e7b5", { 
@@ -1688,7 +1769,7 @@
     let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCLTgNTI4NjEzOTd9.VojBn-hyTxUpkj7hHgCXjEcFvNIEPJtLqcoaJG52ztI"
+    "Authorization": "Bearer <JWT_ACCESS_TOKEN>"
     }
 
     let response = await fetch("http://localhost:8080/api/v1/churches", { 
@@ -1769,7 +1850,7 @@
     let headersList = {
     "Accept": "*/*",
     "User-Agent": "Local Client ",
-    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiQ0NJTVJCOjE3NTI4NjEzOTd9.VojBn-hyTxUpkj7hHgCXjEcFvNIEPJtLqcoaJG52ztI"
+    "Authorization": "Bearer <JWT_ACCESS_TOKEN>"
     }
 
     let response = await fetch("http://localhost:8080/api/v1/churches/687a8affa4380825e6c2e7b5", { 

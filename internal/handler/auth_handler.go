@@ -46,6 +46,18 @@ func (h *AuthHandler) BasicRegister(c echo.Context) error {
 		})
 	}
 
+	// Generate qr code for the user on sign up
+	// _, err := handler.NewQRHandler(c.Request().Context(), &req)
+	// if err != nil {
+	// 	return c.JSON(http.StatusBadRequest, dto.APIResponse{
+	// 		Success: false,
+	// 		Error: &dto.ErrorInfo{
+	// 			Code:    "QR_CODE_GENERATION_FAILED",
+	// 			Message: err.Error(),
+	// 		},
+	// 	})
+	// }
+
 	resp, err := h.authService.BasicRegister(c.Request().Context(), &req)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, dto.APIResponse{
@@ -71,7 +83,8 @@ func (h *AuthHandler) CompleteRegister(c echo.Context) error {
 			Success: false,
 			Error: &dto.ErrorInfo{
 				Code:    "INVALID_REQUEST",
-				Message: "Invalid request body",
+				// Message: "Invalid request body",
+				Message: err.Error(),
 			},
 		})
 	}
@@ -90,6 +103,17 @@ func (h *AuthHandler) CompleteRegister(c echo.Context) error {
 		})
 	}
 
+	// Generate qr code for the user on sign up
+	// _, err := handler.NewQRHandler(c.Request().Context(), &req)
+	// if err != nil {
+	// 	return c.JSON(http.StatusBadRequest, dto.APIResponse{
+	// 		Success: false,
+	// 		Error: &dto.ErrorInfo{
+	// 			Code:    "QR_CODE_GENERATION_FAILED",
+	// 			Message: err.Error(),
+	// 		},
+	// 	})
+	// }
 	resp, err := h.authService.CompleteRegister(c.Request().Context(), &req)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, dto.APIResponse{

@@ -12,6 +12,8 @@ import (
 	"church-attendance-api/internal/repository"
 	"church-attendance-api/internal/utils"
 
+	"github.com/labstack/echo/v4"
+
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -27,19 +29,23 @@ func NewFamilyMemberService(cfg *config.Config, familyMemberRepo *repository.Fam
 	}
 }
 
-func (s *FamilyMemberService) CreateFamilyMember(ctx context.Context, req *dto.CreateFamilyMemberRequest) (*dto.FamilyMemberResponse, error) {
+func (s *FamilyMemberService) CreateFamilyMember(ctx context.Context, c echo.Context, req *dto.CreateFamilyMemberRequest) (*dto.FamilyMemberResponse, error) {
 	// Validate request
 	if req.FamilyMemberName == "" {
 		return nil, errors.New("family member name is required")
 	}
+	userID := c.Get("user_id").(string)
+
+	dateOfBirth, _ := time.Parse("2022-04-03", req.FamilyMemberDateOfBirth)
 
 	// Create family member
 	familyMember := &models.FamilyMember{
+		FamilyHead:               userID,
 		FamilyMemberName:         req.FamilyMemberName,
 		FamilyMemberPhone:        req.FamilyMemberPhone,
 		FamilyMemberEmail:        req.FamilyMemberEmail,
 		FamilyMemberRelationship: req.FamilyMemberRelationship,
-		FamilyMemberDateOfBirth:  req.FamilyMemberDateOfBirth,
+		FamilyMemberDateOfBirth:  dateOfBirth,
 		FamilyMemberGender:       req.FamilyMemberGender,
 		FamilyMemberOccupation:   req.FamilyMemberOccupation,
 		DateAdded:                time.Now(),
@@ -145,8 +151,9 @@ func (s *FamilyMemberService) UpdateFamilyMember(ctx context.Context, id string,
 	if req.FamilyMemberRelationship != "" {
 		familyMember.FamilyMemberRelationship = req.FamilyMemberRelationship
 	}
-	if req.FamilyMemberDateOfBirth != nil {
-		familyMember.FamilyMemberDateOfBirth = req.FamilyMemberDateOfBirth
+	if req.FamilyMemberDateOfBirth != "" {
+		familyMemberDateOfBirth, _ := time.Parse("2024-04-04", req.FamilyMemberDateOfBirth)
+		familyMember.FamilyMemberDateOfBirth = familyMemberDateOfBirth
 	}
 	if req.FamilyMemberGender != "" {
 		familyMember.FamilyMemberGender = req.FamilyMemberGender

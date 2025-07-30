@@ -23,18 +23,18 @@ func (h *FamilyMemberHandler) CreateFamilyMember(c echo.Context) error {
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, dto.ErrorResponse{
 			Code:    "INVALID_REQUEST",
-			Message: "Invalid request body",
+			Message: err.Error(),
 		})
 	}
 
 	if err := c.Validate(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, dto.ErrorResponse{
 			Code:    "VALIDATION_ERROR",
-			Message: "Validation failed",
+			Message: err.Error(),
 		})
 	}
 
-	familyMember, err := h.familyMemberService.CreateFamilyMember(c.Request().Context(), &req)
+	familyMember, err := h.familyMemberService.CreateFamilyMember(c.Request().Context(), c, &req)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, dto.ErrorResponse{
 			Code:    "FAMILY_MEMBER_CREATION_FAILED",
