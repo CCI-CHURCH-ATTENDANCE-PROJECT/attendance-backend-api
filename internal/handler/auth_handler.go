@@ -292,3 +292,88 @@ func (h *AuthHandler) Logout(c echo.Context) error {
 		Message: "Logged out successfully",
 	})
 }
+
+func (h *AuthHandler) ForgotPassword(c echo.Context) error {
+	var req dto.ForgotPasswordRequest
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, dto.APIResponse{
+			Success: false,
+			Error: &dto.ErrorInfo{
+				Code:    "INVALID_REQUEST",
+				Message: "Invalid request body",
+			},
+		})
+	}
+
+	if err := c.Validate(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, dto.APIResponse{
+			Success: false,
+			Error: &dto.ErrorInfo{
+				Code:    "VALIDATION_ERROR",
+				Message: "Validation failed",
+				Details: []dto.ErrorDetail{
+					{Field: "request", Message: err.Error()},
+				},
+			},
+		})
+	}
+
+	resp, err := h.authService.ForgotPassword(c.Request().Context(), &req)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, dto.APIResponse{
+			Success: false,
+			Error: &dto.ErrorInfo{
+				Code:    "FORGOT_PASSWORD_FAILED",
+				Message: err.Error(),
+			},
+		})
+	}
+
+	return c.JSON(http.StatusOK, dto.APIResponse{
+		Success: true,
+		Data:    resp,
+	})
+}
+
+func (h *AuthHandler) ResetPassword(c echo.Context) error {
+	var req dto.ResetPasswordRequest
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, dto.APIResponse{
+			Success: false,
+			Error: &dto.ErrorInfo{
+				Code:    "INVALID_REQUEST",
+				Message: "Invalid request body",
+			},
+		})
+	}
+
+	if err := c.Validate(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, dto.APIResponse{
+			Success: false,
+			Error: &dto.ErrorInfo{
+				Code:    "VALIDATION_ERROR",
+				Message: "Validation failed",
+				Details: []dto.ErrorDetail{
+					{Field: "request", Message: err.Error()},
+				},
+			},
+		})
+	}
+
+	resp, err := h.authService.ResetPassword(c.Request().Context(), &req)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, dto.APIResponse{
+			Success: false,
+			Error: &dto.ErrorInfo{
+				Code:    "RESET_PASSWORD_FAILED",
+				Message: err.Error(),
+			},
+		})
+	}
+
+	return c.JSON(http.StatusOK, dto.APIResponse{
+		Success: true,
+		Message: "Password reset successfully",
+		Data:    resp,
+	})
+}

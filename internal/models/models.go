@@ -33,7 +33,7 @@ type User struct {
 	UserHouseAddress             string              `bson:"user_house_address" json:"user_house_address"`
 	PhoneNumber                  string              `bson:"phone_number" json:"phone_number" validate:"omitempty,e164"`
 	InstagramHandle              string              `bson:"instagram_handle" json:"instagram_handle"`
-	FamilyMembers                []string            `bson:"family_member_id" json:"family_member_id"`
+	FamilyMembers                []int               `bson:"family_member_id" json:"family_member_id"`
 	DateJoined                   time.Time           `bson:"date_joined" json:"date_joined"`
 	DateUpdated                  time.Time           `bson:"date_updated" json:"date_updated"`
 	Role                         *primitive.ObjectID `bson:"role,omitempty" json:"role"`
@@ -70,7 +70,7 @@ type UserResponse struct {
 	UserHouseAddress             string              `json:"user_house_address"`
 	PhoneNumber                  string              `json:"phone_number"`
 	InstagramHandle              string              `json:"instagram_handle"`
-	FamilyMembers                []string            `json:"family_member_id"`
+	FamilyMembers                []int               `json:"family_member_id"`
 	DateJoined                   time.Time           `json:"date_joined"`
 	DateUpdated                  time.Time           `json:"date_updated"`
 	Role                         *primitive.ObjectID `json:"role"`

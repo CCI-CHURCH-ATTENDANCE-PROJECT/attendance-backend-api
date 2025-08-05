@@ -112,12 +112,21 @@ func (s *AuthService) CompleteRegister(ctx context.Context, req *dto.CompleteReg
 	}
 
 	// Parse DateOf Birth sent as string to DateTime Format
-	dateOfBirth, _ := time.Parse("2025-4-11", req.DateOfBirth)
+	dateOfBirth, _ := time.Parse("2002-4-11", req.DateOfBirth)
 
 	// Parse date Joined church from string to date time format
-	dateJoinedChurch, _ := time.Parse("2025-4-11", req.DateJoinedChurch)
+	dateJoinedChurch, _ := time.Parse("2002-4-11", req.DateJoinedChurch)
 
-	//Generate QRCode image and QRCode token for the user and save it in the QRCodeTonken fields
+	//Use the existing QR Service to generate QR code token and image
+	qrCodeToken, err := utils.GenerateRandomToken(32)
+	if err != nil {
+		return nil, fmt.Errorf("failed to generate QR code token: %w", err)
+	}
+
+	qrCodeImage, err := utils.GenerateQRCode(userID, 256)
+	if err != nil {
+		return nil, fmt.Errorf("failed to generate QR code image: %w", err)
+	}
 
 	//A logic to decide if the user will have admin set to true or false
 	// Create user with complete information
@@ -133,6 +142,8 @@ func (s *AuthService) CompleteRegister(ctx context.Context, req *dto.CompleteReg
 		Visitor:                      req.Visitor,
 		Usher:                        req.Usher,
 		Admin:                        false,
+		QRCodeToken:                  qrCodeToken,
+		QRCodeImage:                  qrCodeImage,
 		UserWorkDepartment:           req.UserWorkDepartment,
 		DateJoinedChurch:             dateJoinedChurch,
 		FamilyHead:                   req.FamilyHead,
@@ -165,7 +176,7 @@ func (s *AuthService) CompleteRegister(ctx context.Context, req *dto.CompleteReg
 
 	// Store token in user model
 	user.PasswordResetToken = token
-	user.PasswordResetExpires = time.Now().Add(time.Hour * 24) // Token expires in 24 hours
+	user.PasswordResetExpires = time.Now().Add(s.cfg.PasswordResetTokenLifespan)
 	if err := s.userRepo.Update(ctx, user); err != nil {
 		return nil, fmt.Errorf("failed to update user with password reset token: %w", err)
 	}
@@ -176,9 +187,13 @@ func (s *AuthService) CompleteRegister(ctx context.Context, req *dto.CompleteReg
 			"FirstName": user.FirstName,
 			"Link":      fmt.Sprintf("%s/set-password?token=%s", s.cfg.FrontendURL, token),
 		}
+		//Log the data to be sent to the email
+		fmt.Printf("data: %v\n", data)
+
 		if err := s.emailService.SendEmail(user.Email, "Welcome to CCI Member Portal, Set Your Password", "signup.html", data); err != nil {
 			// Log the error, but don't block the registration process
 			fmt.Printf("failed to send signup email: %v\n", err)
+
 		}
 	}()
 
@@ -193,6 +208,8 @@ func (s *AuthService) CompleteRegister(ctx context.Context, req *dto.CompleteReg
 		Member:                       user.Member,
 		Visitor:                      user.Visitor,
 		Usher:                        user.Usher,
+		QRCodeToken:                  user.QRCodeToken,
+		QRCodeImage:                  user.QRCodeImage,
 		UserWorkDepartment:           user.UserWorkDepartment,
 		DateJoinedChurch:             user.DateJoinedChurch,
 		FamilyHead:                   user.FamilyHead,
@@ -244,6 +261,18 @@ func (s *AuthService) SetPassword(ctx context.Context, req *dto.SetPasswordReque
 	if err != nil {
 		return fmt.Errorf("failed to hash password: %w", err)
 	}
+
+	//Send email to user notifying them that their password has been set successfully
+	go func() {
+		data := map[string]interface{}{
+			"FirstName": user.FirstName,
+			"Link":      fmt.Sprintf("%s/login", s.cfg.FrontendURL),
+		}
+		if err := s.emailService.SendEmail(user.Email, "Your Password has been Set Successfully", "password_set_success.html", data); err != nil {
+			// Log the error, but don't block the password setting process
+			fmt.Printf("failed to send password set email: %v\n", err)
+		}
+	}()
 
 	// Update user's password
 	user.Password = hashedPassword
@@ -385,4 +414,101 @@ func (s *AuthService) Logout(ctx context.Context, userID string) error {
 	}
 
 	return nil
+}
+
+func (s *AuthService) ForgotPassword(ctx context.Context, req *dto.ForgotPasswordRequest) (*dto.ForgotPasswordResponse, error) {
+	// Get user by email
+	user, err := s.userRepo.GetByEmail(ctx, req.Email)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get user: %w", err)
+	}
+	if user == nil {
+		return nil, errors.New("no user exists with this email")
+	}
+
+	// Generate password reset token
+	token, err := utils.GeneratePasswordRandomToken(32)
+	if err != nil {
+		return nil, fmt.Errorf("failed to generate password reset token: %w", err)
+	}
+
+	// Update user with reset token
+	user.PasswordResetToken = token
+	user.PasswordResetExpires = time.Now().Add(s.cfg.PasswordResetTokenLifespan)
+	if err := s.userRepo.Update(ctx, user); err != nil {
+		return nil, fmt.Errorf("failed to update user with password reset token: %w", err)
+	}
+
+	// Send password reset email
+	go func() {
+		data := map[string]interface{}{
+			"FirstName": user.FirstName,
+			"Link":      fmt.Sprintf("%s/reset-password?token=%s", s.cfg.FrontendURL, token),
+		}
+		if err := s.emailService.SendEmail(user.Email, "Reset Your Password", "password_reset_email.html", data); err != nil {
+			fmt.Printf("failed to send password reset email: %v\n", err)
+		}
+	}()
+
+	return &dto.ForgotPasswordResponse{
+		Message: "Password reset link has been sent to your email",
+	}, nil
+}
+
+func (s *AuthService) ResetPassword(ctx context.Context, req *dto.ResetPasswordRequest) (*dto.CreatePasswordResponse, error) {
+	// Get user by password reset token
+	user, err := s.userRepo.GetByPasswordResetToken(ctx, req.Token)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get user by password reset token: %w", err)
+	}
+	if user == nil {
+		return nil, errors.New("invalid or expired token")
+	}
+
+	// Check if token has expired
+	if time.Now().After(user.PasswordResetExpires) {
+		return nil, errors.New("token has expired")
+	}
+
+	// Validate password strength
+	if !utils.IsValidPassword(req.Password) {
+		return nil, errors.New("password must be at least 8 characters long and contain uppercase, lowercase, and number")
+	}
+
+	// Check if passwords match
+	if req.Password != req.ConfirmPassword {
+		return nil, errors.New("passwords do not match")
+	}
+
+	// Hash new password
+	hashedPassword, err := utils.HashPassword(req.Password)
+	if err != nil {
+		return nil, fmt.Errorf("failed to hash password: %w", err)
+	}
+
+	// Update user's password and clear reset token
+	user.Password = hashedPassword
+	user.PasswordResetToken = ""
+	user.PasswordResetExpires = time.Time{}
+	if err := s.userRepo.Update(ctx, user); err != nil {
+		return nil, fmt.Errorf("failed to update password: %w", err)
+	}
+
+	// Send password reset success email
+	go func() {
+		data := map[string]interface{}{
+			"FirstName": user.FirstName,
+			"Link":      fmt.Sprintf("%s/login", s.cfg.FrontendURL),
+		}
+		if err := s.emailService.SendEmail(user.Email, "Password Reset Successful", "password_set_success.html", data); err != nil {
+			fmt.Printf("failed to send password reset success email: %v\n", err)
+		}
+	}()
+
+	return &dto.CreatePasswordResponse{
+		UserID:      user.UserID,
+		Email:       user.Email,
+		DateCreated: user.DateJoined,
+		DateUpdated: user.DateUpdated,
+	}, nil
 }

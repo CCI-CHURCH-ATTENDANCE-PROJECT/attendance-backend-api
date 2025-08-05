@@ -14,36 +14,30 @@ type BasicRegisterRequest struct {
 }
 
 type CompleteRegisterRequest struct {
-	Email                        string   `json:"email" validate:"required,email"`
-	FirstName                    string   `json:"fname" validate:"required,min=2,max=50"`
-	LastName                     string   `json:"lname" validate:"required,min=2,max=50"`
-	Bio                          string   `json:"bio"`
-	DateOfBirth                  string   `json:"date_of_birth"`
-	Gender                       string   `json:"gender" validate:"oneof=Male Female"`
-	Member                       bool     `json:"member"`
-	Visitor                      bool     `json:"visitor"`
-	Usher                        bool     `json:"usher"`
-	UserWorkDepartment           string   `json:"user_work_unit"`
-	DateJoinedChurch             string   `json:"date_joined_church"`
-	FamilyHead                   bool     `json:"family_head"`
-	UserCampus                   string   `json:"user_campus"`
-	InstagramHandle              string   `json:"instagram_handle"`
-	FamilyMembers                []string `json:"family_members"`
-	PhoneNumber                  string   `json:"phone_number"`
-	Profession                   string   `json:"profession"`
-	UserHouseAddress             string   `json:"user_house_address"`
-	CampusState                  string   `json:"campus_state"`
-	CampusCountry                string   `json:"campus_country"`
-	EmergencyContactName         string   `json:"emergency_contact_name"`
-	EmergencyContactPhone        string   `json:"emergency_contact_phone"`
-	EmergencyContactEmail        string   `json:"emergency_contact_email" validate:"omitempty,email"`
-	EmergencyContactRelationship string   `json:"emergency_contact_relationship"`
-}
-
-type CreatePasswordRequest struct {
-	UserID          string `json:"user_id" validate:"required"`
-	Password        string `json:"password" validate:"required,min=8"`
-	ConfirmPassword string `json:"confirm_password" validate:"required,min=8"`
+	Email                        string `json:"email" validate:"required,email"`
+	FirstName                    string `json:"fname" validate:"required,min=2,max=50"`
+	LastName                     string `json:"lname" validate:"required,min=2,max=50"`
+	Bio                          string `json:"bio"`
+	DateOfBirth                  string `json:"date_of_birth"`
+	Gender                       string `json:"gender" validate:"oneof=Male Female"`
+	Member                       bool   `json:"member"`
+	Visitor                      bool   `json:"visitor"`
+	Usher                        bool   `json:"usher"`
+	UserWorkDepartment           string `json:"user_work_unit"`
+	DateJoinedChurch             string `json:"date_joined_church"`
+	FamilyHead                   bool   `json:"family_head"`
+	UserCampus                   string `json:"user_campus"`
+	InstagramHandle              string `json:"instagram_handle"`
+	FamilyMembers                []int  `json:"family_members"`
+	PhoneNumber                  string `json:"phone_number"`
+	Profession                   string `json:"profession"`
+	UserHouseAddress             string `json:"user_house_address"`
+	CampusState                  string `json:"campus_state"`
+	CampusCountry                string `json:"campus_country"`
+	EmergencyContactName         string `json:"emergency_contact_name"`
+	EmergencyContactPhone        string `json:"emergency_contact_phone"`
+	EmergencyContactEmail        string `json:"emergency_contact_email" validate:"omitempty,email"`
+	EmergencyContactRelationship string `json:"emergency_contact_relationship"`
 }
 
 type LoginRequest struct {
@@ -72,13 +66,15 @@ type CompleteRegisterResponse struct {
 	Member                       bool                `json:"member"`
 	Visitor                      bool                `json:"visitor"`
 	Usher                        bool                `json:"usher"`
+	QRCodeToken                  string              `json:"qr_code_token"`
+	QRCodeImage                  string              `json:"qr_code_image"`
 	Admin                        bool                `json:"admin"`
 	UserWorkDepartment           string              `json:"user_work_unit"`
 	DateJoinedChurch             time.Time           `json:"date_joined_church"`
 	FamilyHead                   bool                `json:"family_head"`
 	UserCampus                   string              `json:"user_campus"`
 	InstagramHandle              string              `json:"instagram_handle"`
-	FamilyMembers                []string            `json:"family_members"`
+	FamilyMembers                []int               `json:"family_members"`
 	PhoneNumber                  string              `json:"phone_number"`
 	Profession                   string              `json:"profession"`
 	UserHouseAddress             string              `json:"user_house_address"`
@@ -102,13 +98,6 @@ type LoginResponse struct {
 type TokenResponse struct {
 	AccessToken  string `json:"access_token"`
 	RefreshToken string `json:"refresh_token"`
-}
-
-type CreatePasswordResponse struct {
-	UserID      string    `json:"user_id"`
-	Email       string    `json:"email"`
-	DateCreated time.Time `json:"date_joined"`
-	DateUpdated time.Time `json:"date_updated"`
 }
 
 type UserSummary struct {
@@ -392,10 +381,33 @@ type PaginatedLocalChurchesResponse struct {
 	Pagination Pagination             `json:"pagination"`
 }
 
+// The one being used in the set password endpoint
 type SetPasswordRequest struct {
 	Token           string `json:"token"`
 	Password        string `json:"password"`
 	ConfirmPassword string `json:"confirm_password"`
+}
+
+type CreatePasswordResponse struct {
+	UserID      string    `json:"user_id"`
+	Email       string    `json:"email"`
+	DateCreated time.Time `json:"date_joined"`
+	DateUpdated time.Time `json:"date_updated"`
+}
+
+type ResetPasswordRequest struct {
+	Token           string `json:"token"`
+	Email           string `json:"email"`
+	Password        string `json:"password"`
+	ConfirmPassword string `json:"confirm_password"`
+}
+
+type ForgotPasswordRequest struct {
+	Email string `json:"email" validate:"required,email"`
+}
+
+type ForgotPasswordResponse struct {
+	Message string `json:"message"`
 }
 
 // Generic Response DTOs

@@ -43,6 +43,9 @@ type Config struct {
 
 	// Frontend
 	FrontendURL string
+
+	// Password Reset
+	PasswordResetTokenLifespan time.Duration
 }
 
 func Load() *Config {
@@ -62,6 +65,11 @@ func Load() *Config {
 		log.Fatal("Invalid JWT_REFRESH_EXPIRY format:", err)
 	}
 
+	passwordResetLifespan, err := time.ParseDuration(getEnv("PASSWORD_RESET_TOKEN_LIFESPAN", "24h"))
+	if err != nil {
+		log.Fatal("Invalid PASSWORD_RESET_TOKEN_LIFESPAN format:", err)
+	}
+
 	return &Config{
 		DBHost:           getEnv("DB_HOST", "localhost"),
 		DBPort:           getEnv("DB_PORT", "27017"),
@@ -78,9 +86,10 @@ func Load() *Config {
 		Timezone:         getEnv("TIMEZONE", "Africa/Lagos"),
 		ResendAPIKey:     getEnv("RESEND_API_KEY", ""),
 		ResendFrom:       getEnv("RESEND_FROM", ""),
-		ResendCc:         getEnvAsSlice("RESEND_CC", []string{}),
-		ResendBcc:        getEnvAsSlice("RESEND_BCC", []string{}),
-		FrontendURL:      getEnv("FRONTEND_URL", "http://localhost:3000"),
+		ResendCc:                   getEnvAsSlice("RESEND_CC", []string{}),
+		ResendBcc:                  getEnvAsSlice("RESEND_BCC", []string{}),
+		FrontendURL:                getEnv("FRONTEND_URL", "http://localhost:3000"),
+		PasswordResetTokenLifespan: passwordResetLifespan,
 	}
 }
 

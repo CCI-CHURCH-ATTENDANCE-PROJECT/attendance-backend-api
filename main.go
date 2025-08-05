@@ -117,6 +117,8 @@ func main() {
 	auth.POST("/login", authHandler.Login)
 	auth.POST("/refresh", authHandler.RefreshToken)
 	auth.POST("/set-password", authHandler.SetPassword)
+	auth.POST("/forgot-password", authHandler.ForgotPassword)
+	auth.POST("/reset-password", authHandler.ResetPassword)
 
 	// Protected routes
 	protected := api.Group("")
