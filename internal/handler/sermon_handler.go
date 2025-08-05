@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"church-attendance-api/internal/dto"
-	"church-attendance-api/internal/service"
+	"cci-api/internal/dto"
+	"cci-api/internal/service"
 
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson/primitive"

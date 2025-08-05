@@ -5,8 +5,8 @@ import (
 	"errors"
 	"time"
 
-	"church-attendance-api/internal/database"
-	"church-attendance-api/internal/models"
+	"cci-api/internal/database"
+	"cci-api/internal/models"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -109,7 +109,6 @@ func (r *FamilyMemberRepository) GetAll(ctx context.Context, page, limit int) ([
 
 	return familyMembers, int(total), nil
 }
-
 
 // UpdateFamilyMember updates a family member's details by ID
 func (r *FamilyMemberRepository) Update(ctx context.Context, familyMember *models.FamilyMember) error {

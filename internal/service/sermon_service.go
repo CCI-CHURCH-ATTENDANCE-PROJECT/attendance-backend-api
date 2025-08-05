@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"time"
 
-	"church-attendance-api/internal/config"
-	"church-attendance-api/internal/dto"
-	"church-attendance-api/internal/models"
-	"church-attendance-api/internal/repository"
-	"church-attendance-api/internal/utils"
+	"cci-api/internal/config"
+	"cci-api/internal/dto"
+	"cci-api/internal/models"
+	"cci-api/internal/repository"
+	"cci-api/internal/utils"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -94,17 +94,17 @@ func (s *SermonService) GetSermons(ctx context.Context, page, limit int) (*dto.P
 	sermonResponses := make([]*dto.SermonResponse, len(sermons))
 	for i, sermon := range sermons {
 		sermonResponses[i] = &dto.SermonResponse{
-		ID:          sermon.ID.Hex(),
-		Title:       sermon.SermonTopic,
-		Speaker:     sermon.Preacher,
-		Date:        sermon.DateOfMeeting,
-		VideoURL:    sermon.VideoUrl,
-		AudioURL:    sermon.AudioUrl,
-		Notes:       sermon.SermonNote,
-		Scripture:   sermon.Scripture,
-		Series:      sermon.Series,
-		DateAdded:   time.Now(),
-		DateUpdated: time.Now(),
+			ID:          sermon.ID.Hex(),
+			Title:       sermon.SermonTopic,
+			Speaker:     sermon.Preacher,
+			Date:        sermon.DateOfMeeting,
+			VideoURL:    sermon.VideoUrl,
+			AudioURL:    sermon.AudioUrl,
+			Notes:       sermon.SermonNote,
+			Scripture:   sermon.Scripture,
+			Series:      sermon.Series,
+			DateAdded:   time.Now(),
+			DateUpdated: time.Now(),
 		}
 	}
 

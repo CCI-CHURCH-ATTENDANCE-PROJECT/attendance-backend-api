@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"church-attendance-api/internal/dto"
-	"church-attendance-api/internal/service"
+	"cci-api/internal/dto"
+	"cci-api/internal/service"
 
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -31,7 +31,6 @@ func (h *AnnouncementHandler) CreateAnnouncement(c echo.Context) error {
 	}
 	fmt.Printf("This is the request body passed: %v\n", req)
 
-	
 	if err := c.Validate(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, dto.ErrorResponse{
 			Code:    "VALIDATION_ERROR",

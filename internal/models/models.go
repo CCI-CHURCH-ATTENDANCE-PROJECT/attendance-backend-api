@@ -33,7 +33,7 @@ type User struct {
 	UserHouseAddress             string              `bson:"user_house_address" json:"user_house_address"`
 	PhoneNumber                  string              `bson:"phone_number" json:"phone_number" validate:"omitempty,e164"`
 	InstagramHandle              string              `bson:"instagram_handle" json:"instagram_handle"`
-	FamilyMembers                []string            `bson:"family_member_id" json:"family_member_id"`
+	FamilyMembers                []int               `bson:"family_member_id" json:"family_member_id"`
 	DateJoined                   time.Time           `bson:"date_joined" json:"date_joined"`
 	DateUpdated                  time.Time           `bson:"date_updated" json:"date_updated"`
 	Role                         *primitive.ObjectID `bson:"role,omitempty" json:"role"`
@@ -41,6 +41,8 @@ type User struct {
 	EmergencyContactPhone        string              `bson:"emergency_contact_phone" json:"emergency_contact_phone"`
 	EmergencyContactEmail        string              `bson:"emergency_contact_email" json:"emergency_contact_email" validate:"omitempty,email"`
 	EmergencyContactRelationship string              `bson:"emergency_contact_relationship" json:"emergency_contact_relationship"`
+	PasswordResetToken           string              `bson:"password_reset_token,omitempty" json:"-"`
+	PasswordResetExpires         time.Time           `bson:"password_reset_expires,omitempty" json:"-"`
 }
 
 // UserResponse represents user data for API responses (without sensitive data)
@@ -68,7 +70,7 @@ type UserResponse struct {
 	UserHouseAddress             string              `json:"user_house_address"`
 	PhoneNumber                  string              `json:"phone_number"`
 	InstagramHandle              string              `json:"instagram_handle"`
-	FamilyMembers                []string            `json:"family_member_id"`
+	FamilyMembers                []int               `json:"family_member_id"`
 	DateJoined                   time.Time           `json:"date_joined"`
 	DateUpdated                  time.Time           `json:"date_updated"`
 	Role                         *primitive.ObjectID `json:"role"`

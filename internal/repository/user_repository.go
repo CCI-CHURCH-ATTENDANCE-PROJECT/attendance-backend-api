@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"time"
 
-	"church-attendance-api/internal/database"
-	"church-attendance-api/internal/models"
+	"cci-api/internal/database"
+	"cci-api/internal/models"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -88,11 +88,58 @@ func (r *UserRepository) GetByQRToken(ctx context.Context, token string) (*model
 	return &user, nil
 }
 
+func (r *UserRepository) GetByPasswordResetToken(ctx context.Context, token string) (*models.User, error) {
+	var user models.User
+	err := r.collection.FindOne(ctx, bson.M{"password_reset_token": token}).Decode(&user)
+	if err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &user, nil
+}
+
 func (r *UserRepository) Update(ctx context.Context, user *models.User) error {
 	user.DateUpdated = time.Now()
 
 	filter := bson.M{"_id": user.ID}
-	update := bson.M{"$set": user}
+	update := bson.M{
+		"$set": bson.M{
+			"email":                          user.Email,
+			"fname":                          user.FirstName,
+			"lname":                          user.LastName,
+			"bio":                            user.Bio,
+			"date_of_birth":                  user.DateOfBirth,
+			"gender":                         user.Gender,
+			"member":                         user.Member,
+			"visitor":                        user.Visitor,
+			"usher":                          user.Usher,
+			"admin":                          user.Admin,
+			"user_work_department":           user.UserWorkDepartment,
+			"date_joined_church":             user.DateJoinedChurch,
+			"qr_code_token":                  user.QRCodeToken,
+			"qr_code_image":                  user.QRCodeImage,
+			"family_head":                    user.FamilyHead,
+			"user_campus":                    user.UserCampus,
+			"campus_state":                   user.CampusState,
+			"campus_country":                 user.CampusCountry,
+			"profession":                     user.Profession,
+			"user_house_address":             user.UserHouseAddress,
+			"phone_number":                   user.PhoneNumber,
+			"instagram_handle":               user.InstagramHandle,
+			"family_member_id":               user.FamilyMembers,
+			"date_updated":                   user.DateUpdated,
+			"role":                           user.Role,
+			"emergency_contact_name":         user.EmergencyContactName,
+			"emergency_contact_phone":        user.EmergencyContactPhone,
+			"emergency_contact_email":        user.EmergencyContactEmail,
+			"emergency_contact_relationship": user.EmergencyContactRelationship,
+			"password_reset_token":           user.PasswordResetToken,
+			"password_reset_expires":         user.PasswordResetExpires,
+			"user_password":                  user.Password,
+		},
+	}
 
 	_, err := r.collection.UpdateOne(ctx, filter, update)
 	return err
@@ -229,13 +276,13 @@ func (r *UserRepository) UpdateQRToken(ctx context.Context, userID, token string
 
 func (r *UserRepository) UpdateQRCodeImage(ctx context.Context, userID, qrImage string) error {
 	filter := bson.M{"user_id": userID}
-	update:=bson.M{
-		"$set":bson.M{
-			"qr_code_image":qrImage,
-			"date_updated": time.Now(), 
+	update := bson.M{
+		"$set": bson.M{
+			"qr_code_image": qrImage,
+			"date_updated":  time.Now(),
 		},
 	}
-	_, err:=r.collection.UpdateOne(ctx, filter, update)
+	_, err := r.collection.UpdateOne(ctx, filter, update)
 	return err
 }
 

@@ -8,12 +8,12 @@ import (
 	"os/signal"
 	"time"
 
-	"church-attendance-api/internal/config"
-	"church-attendance-api/internal/database"
-	"church-attendance-api/internal/handler"
-	"church-attendance-api/internal/middleware"
-	"church-attendance-api/internal/repository"
-	"church-attendance-api/internal/service"
+	"cci-api/internal/config"
+	"cci-api/internal/database"
+	"cci-api/internal/handler"
+	"cci-api/internal/middleware"
+	"cci-api/internal/repository"
+	"cci-api/internal/service"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
@@ -57,7 +57,8 @@ func main() {
 	localChurchRepo := repository.NewLocalChurchRepository(db)
 
 	// Initialize services
-	authService := service.NewAuthService(cfg, userRepo, refreshTokenRepo)
+	emailService := service.NewEmailService(cfg)
+	authService := service.NewAuthService(cfg, userRepo, refreshTokenRepo, emailService)
 	userService := service.NewUserService(cfg, userRepo)
 	attendanceService := service.NewAttendanceService(cfg, attendanceRepo, userRepo)
 	qrService := service.NewQRService(cfg, userRepo)
@@ -115,6 +116,9 @@ func main() {
 	auth.POST("/register/complete", authHandler.CompleteRegister)
 	auth.POST("/login", authHandler.Login)
 	auth.POST("/refresh", authHandler.RefreshToken)
+	auth.POST("/set-password", authHandler.SetPassword)
+	auth.POST("/forgot-password", authHandler.ForgotPassword)
+	auth.POST("/reset-password", authHandler.ResetPassword)
 
 	// Protected routes
 	protected := api.Group("")

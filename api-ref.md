@@ -65,11 +65,11 @@
     }
 
     let bodyContent = JSON.stringify({
-      "fname": "Victoria",
+      "fname": "Eons",
       "lname": "Daniel",
-      "email": "sadaniyi@gmail.com",
+      "email": "eonsintegral@gmail.com",
       "password": "Graphene@work3",
-      "bio": "This is a complete registration for Seun test",
+      "bio": "This is a complete registration for sign up Email test",
       "date_of_birth": "1996-12-11",
       "gender": "Male",
       "member": true,
@@ -106,17 +106,18 @@
     console.log(data);
 
 
+
 - **Sample Response**
   ```json
     {
       "success": true,
       "message": "User registered successfully",
       "data": {
-        "user_id": "CCIMRB-66116",
-        "email": "sadaniyi@gmail.com",
-        "FirstName": "Victoria",
+        "user_id": "CCIMRB-90557",
+        "email": "eonsintegral@gmail.com",
+        "FirstName": "Eons",
         "LastName": "Daniel",
-        "bio": "This is a complete registration for Seun test",
+        "bio": "This is a complete registration for sign up Email test",
         "date_of_birth": "0001-01-01T00:00:00Z",
         "gender": "Male",
         "member": true,
@@ -143,12 +144,50 @@
         "emergency_contact_email": "suleman@example.com",
         "emergency_contact_relationship": "Brother",
         "role": null,
-        "date_joined": "2025-07-24T18:36:02.849564+01:00",
-        "date_updated": "2025-07-24T18:36:02.849564+01:00"
+        "date_joined": "2025-08-05T12:08:16.974485+01:00",
+        "date_updated": "2025-08-05T12:08:16.981414+01:00"
       }
     }
 
+### Set Password
+- **POST** `/auth/set-password`
+- **Headers:** `Content-Type: application/json`
+- **Body:**
+  | Field            | Type   | Required | Description           |
+  |------------------|--------|----------|-----------------------|
+  | password         | string | Yes      | User's password       |
+  | confirm_password | string | Yes      | User's password       |
+  | token            | string | Yes      | Password reset token  |
 
+- **Sample Request:**
+  ```javascript
+    let headersList = {
+    "Accept": "*/*",
+    "User-Agent": "Local Client",
+    "Content-Type": "application/json"
+    }
+
+    let bodyContent = JSON.stringify({
+      "password": "Graphene@work3",
+      "confirm_password": "Graphene@work3",
+      "token": "0skyZk8anEz8xewtj4qNneWd8xQd09jvNA2RWVuzqr4="
+    });
+
+    let response = await fetch("http://localhost:8080/api/v1/auth/set-password", { 
+      method: "POST",
+      body: bodyContent,
+      headers: headersList
+    });
+
+    let data = await response.text();
+    console.log(data);
+
+- **Sample Response:**
+  ```json
+    {
+    "success": true,
+    "message": "Your new Password has been set successfully"
+  }
 
 
 ### Login
@@ -267,6 +306,87 @@
     {
     "success": true,
     "message": "Logged out successfully"
+  }
+
+
+### Password Reset Request
+- **POST** `/auth/password-reset`
+- **Headers:** `Content-Type: application/json`
+- **Body:**
+  | Field | Type   | Required | Description           |
+  |-------|--------|----------|-----------------------|
+  | email | string | Yes      | User's email address  |
+- **Sample Request:**
+  ```javascript
+    let headersList = {
+    "Accept": "*/*",
+    "User-Agent": "Local API Client (local)",
+    "Content-Type": "application/json"
+    }
+
+    let bodyContent = JSON.stringify({
+      "token":"028fac170ffab184c7e44d8432ebb780c0a9931198208a3e904eba1c82b1a51c",
+      "password": "Golang54G@",
+      "confirm_password": "Golang54G@"
+    });
+
+    let response = await fetch("http://localhost:8080/api/v1/auth/reset-password", { 
+      method: "POST",
+      body: bodyContent,
+      headers: headersList
+    });
+
+    let data = await response.text();
+    console.log(data);
+  
+- **Sample Response:**
+  ```json
+    {
+      "success": true,
+      "message": "Password reset successfully",
+      "data": {
+        "user_id": "CCIMRB-90557",
+        "email": "eonsintegral@gmail.com",
+        "date_joined": "2025-08-05T11:08:16.974Z",
+        "date_updated": "2025-08-05T13:26:51.699217+01:00"
+      }
+    }
+
+### Forgot Password
+- **POST** `/auth/forgot-password`
+- **Headers:** `Content-Type: application/json`
+- **Body:**
+  | Field | Type   | Required | Description           |
+  |-------|--------|----------|-----------------------|
+  | email | string | Yes      | User's email address  |
+- **Sample Request:**
+  ```javascript
+    let headersList = {
+    "Accept": "*/*",
+    "User-Agent": "Local Client",
+    "Content-Type": "application/json"
+    }
+
+    let bodyContent = JSON.stringify({
+      "email": "user@example.com"
+    });
+
+    let response = await fetch("http://localhost:8080/api/v1/auth/forgot-password", {
+      method: "POST",
+      body: bodyContent,
+      headers: headersList
+    });
+
+    let data = await response.text();
+    console.log(data);
+
+- **Sample Response:**
+  ```json
+  {
+    "success": true,
+    "data": {
+      "message": "Password reset link has been sent to your email"
+    }
   }
 
 -----------------------------------

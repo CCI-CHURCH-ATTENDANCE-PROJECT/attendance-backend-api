@@ -3,6 +3,7 @@ package config
 import (
 	"log"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -33,6 +34,18 @@ type Config struct {
 
 	// Timezone
 	Timezone string
+
+	// Resend
+	ResendAPIKey string
+	ResendFrom   string
+	ResendCc     []string
+	ResendBcc    []string
+
+	// Frontend
+	FrontendURL string
+
+	// Password Reset
+	PasswordResetTokenLifespan time.Duration
 }
 
 func Load() *Config {
@@ -52,6 +65,11 @@ func Load() *Config {
 		log.Fatal("Invalid JWT_REFRESH_EXPIRY format:", err)
 	}
 
+	passwordResetLifespan, err := time.ParseDuration(getEnv("PASSWORD_RESET_TOKEN_LIFESPAN", "24h"))
+	if err != nil {
+		log.Fatal("Invalid PASSWORD_RESET_TOKEN_LIFESPAN format:", err)
+	}
+
 	return &Config{
 		DBHost:           getEnv("DB_HOST", "localhost"),
 		DBPort:           getEnv("DB_PORT", "27017"),
@@ -66,7 +84,21 @@ func Load() *Config {
 		CORSOrigins:      getEnv("CORS_ORIGINS", "http://localhost:3000,http://localhost:8080"),
 		QRCodeSize:       256,
 		Timezone:         getEnv("TIMEZONE", "Africa/Lagos"),
+		ResendAPIKey:     getEnv("RESEND_API_KEY", ""),
+		ResendFrom:       getEnv("RESEND_FROM", ""),
+		ResendCc:                   getEnvAsSlice("RESEND_CC", []string{}),
+		ResendBcc:                  getEnvAsSlice("RESEND_BCC", []string{}),
+		FrontendURL:                getEnv("FRONTEND_URL", "http://localhost:3000"),
+		PasswordResetTokenLifespan: passwordResetLifespan,
 	}
+}
+
+func getEnvAsSlice(name string, defaultVal []string) []string {
+	valStr := getEnv(name, "")
+	if valStr == "" {
+		return defaultVal
+	}
+	return strings.Split(valStr, ",")
 }
 
 func getEnv(key, defaultValue string) string {
