@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"church-attendance-api/internal/database"
-	"church-attendance-api/internal/models"
+	"cci-api/internal/database"
+	"cci-api/internal/models"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

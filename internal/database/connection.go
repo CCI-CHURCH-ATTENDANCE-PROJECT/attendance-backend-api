@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	"church-attendance-api/internal/config"
+	"cci-api/internal/config"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"

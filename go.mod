@@ -1,12 +1,15 @@
-module church-attendance-api
+module cci-api
 
-go 1.21
+go 1.23
+
+toolchain go1.24.1
 
 require (
 	github.com/go-playground/validator/v10 v10.27.0
 	github.com/golang-jwt/jwt/v5 v5.2.0
 	github.com/joho/godotenv v1.5.1
 	github.com/labstack/echo/v4 v4.11.4
+	github.com/resend/resend-go/v2 v2.21.0
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	go.mongodb.org/mongo-driver v1.11.4
 	golang.org/x/crypto v0.33.0

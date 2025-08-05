@@ -8,13 +8,13 @@ import (
 
 // Auth DTOs
 type BasicRegisterRequest struct {
-	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required,min=8"`
+	Email           string `json:"email" validate:"required,email"`
+	Password        string `json:"password" validate:"required,min=8"`
+	ConfirmPassword string `json:"confirm_password" validate:"required,min=8"`
 }
 
 type CompleteRegisterRequest struct {
 	Email                        string   `json:"email" validate:"required,email"`
-	Password                     string   `json:"password" validate:"required,min=8"`
 	FirstName                    string   `json:"fname" validate:"required,min=2,max=50"`
 	LastName                     string   `json:"lname" validate:"required,min=2,max=50"`
 	Bio                          string   `json:"bio"`
@@ -41,8 +41,9 @@ type CompleteRegisterRequest struct {
 }
 
 type CreatePasswordRequest struct {
-	UserID   string `json:"user_id" validate:"required"`
-	Password string `json:"password" validate:"required"`
+	UserID          string `json:"user_id" validate:"required"`
+	Password        string `json:"password" validate:"required,min=8"`
+	ConfirmPassword string `json:"confirm_password" validate:"required,min=8"`
 }
 
 type LoginRequest struct {
@@ -389,6 +390,12 @@ type LocalChurchResponse struct {
 type PaginatedLocalChurchesResponse struct {
 	Data       []*LocalChurchResponse `json:"data"`
 	Pagination Pagination             `json:"pagination"`
+}
+
+type SetPasswordRequest struct {
+	Token           string `json:"token"`
+	Password        string `json:"password"`
+	ConfirmPassword string `json:"confirm_password"`
 }
 
 // Generic Response DTOs

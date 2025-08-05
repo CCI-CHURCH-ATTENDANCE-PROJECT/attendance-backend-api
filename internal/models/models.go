@@ -41,6 +41,8 @@ type User struct {
 	EmergencyContactPhone        string              `bson:"emergency_contact_phone" json:"emergency_contact_phone"`
 	EmergencyContactEmail        string              `bson:"emergency_contact_email" json:"emergency_contact_email" validate:"omitempty,email"`
 	EmergencyContactRelationship string              `bson:"emergency_contact_relationship" json:"emergency_contact_relationship"`
+	PasswordResetToken           string              `bson:"password_reset_token,omitempty" json:"-"`
+	PasswordResetExpires         time.Time           `bson:"password_reset_expires,omitempty" json:"-"`
 }
 
 // UserResponse represents user data for API responses (without sensitive data)

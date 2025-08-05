@@ -5,10 +5,10 @@ import (
 	"errors"
 	"fmt"
 
-	"church-attendance-api/internal/config"
-	"church-attendance-api/internal/dto"
-	"church-attendance-api/internal/repository"
-	"church-attendance-api/internal/utils"
+	"cci-api/internal/config"
+	"cci-api/internal/dto"
+	"cci-api/internal/repository"
+	"cci-api/internal/utils"
 )
 
 type QRService struct {
@@ -56,7 +56,6 @@ func (s *QRService) GenerateQRCode(ctx context.Context, req *dto.GenerateQRReque
 	if err != nil {
 		return nil, fmt.Errorf("failed to update user QR code image: %w", err)
 	}
-
 
 	return &dto.QRCodeResponse{
 		QRCodeToken: token,

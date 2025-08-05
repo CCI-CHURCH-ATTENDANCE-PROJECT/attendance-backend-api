@@ -6,24 +6,26 @@ import (
 	"fmt"
 	"time"
 
-	"church-attendance-api/internal/config"
-	"church-attendance-api/internal/dto"
-	"church-attendance-api/internal/models"
-	"church-attendance-api/internal/repository"
-	"church-attendance-api/internal/utils"
+	"cci-api/internal/config"
+	"cci-api/internal/dto"
+	"cci-api/internal/models"
+	"cci-api/internal/repository"
+	"cci-api/internal/utils"
 )
 
 type AuthService struct {
 	cfg              *config.Config
 	userRepo         *repository.UserRepository
 	refreshTokenRepo *repository.RefreshTokenRepository
+	emailService     EmailService
 }
 
-func NewAuthService(cfg *config.Config, userRepo *repository.UserRepository, refreshTokenRepo *repository.RefreshTokenRepository) *AuthService {
+func NewAuthService(cfg *config.Config, userRepo *repository.UserRepository, refreshTokenRepo *repository.RefreshTokenRepository, emailService EmailService) *AuthService {
 	return &AuthService{
 		cfg:              cfg,
 		userRepo:         userRepo,
 		refreshTokenRepo: refreshTokenRepo,
+		emailService:     emailService,
 	}
 }
 
@@ -35,6 +37,11 @@ func (s *AuthService) BasicRegister(ctx context.Context, req *dto.BasicRegisterR
 	}
 	if existingUser != nil {
 		return nil, errors.New("user already exists with this email")
+	}
+
+	// Check if passwords match
+	if req.Password != req.ConfirmPassword {
+		return nil, errors.New("passwords do not match")
 	}
 
 	// Validate password strength
@@ -59,8 +66,8 @@ func (s *AuthService) BasicRegister(ctx context.Context, req *dto.BasicRegisterR
 		UserID:      userID,
 		Email:       req.Email,
 		Password:    hashedPassword,
-		Member:      false,
-		Visitor:     true,
+		Member:      true,
+		Visitor:     false,
 		DateJoined:  time.Now(),
 		DateUpdated: time.Now(),
 	}
@@ -87,16 +94,16 @@ func (s *AuthService) CompleteRegister(ctx context.Context, req *dto.CompleteReg
 		return nil, errors.New("user already exists with this email")
 	}
 
-	// Validate password strength
-	if !utils.IsValidPassword(req.Password) {
-		return nil, errors.New("password must be at least 8 characters long and contain uppercase, lowercase, special character and at  least a number")
-	}
+	// // Validate password strength
+	// if !utils.IsValidPassword(req.Password) {
+	// 	return nil, errors.New("password must be at least 8 characters long and contain uppercase, lowercase, special character and at  least a number")
+	// }
 
 	// Hash password
-	hashedPassword, err := utils.HashPassword(req.Password)
-	if err != nil {
-		return nil, fmt.Errorf("failed to hash password: %w", err)
-	}
+	// hashedPassword, err := utils.HashPassword(req.Password)
+	// if err != nil {
+	// 	return nil, fmt.Errorf("failed to hash password: %w", err)
+	// }
 
 	// Generate user ID
 	userID, err := utils.GenerateUserID()
@@ -117,7 +124,6 @@ func (s *AuthService) CompleteRegister(ctx context.Context, req *dto.CompleteReg
 	user := &models.User{
 		UserID:                       userID,
 		Email:                        req.Email,
-		Password:                     hashedPassword,
 		FirstName:                    req.FirstName,
 		LastName:                     req.LastName,
 		Bio:                          req.Bio,
@@ -151,6 +157,31 @@ func (s *AuthService) CompleteRegister(ctx context.Context, req *dto.CompleteReg
 		return nil, fmt.Errorf("failed to create user: %w", err)
 	}
 
+	// Generate password reset token
+	token, err := utils.GeneratePasswordRandomToken(32)
+	if err != nil {
+		return nil, fmt.Errorf("failed to generate password reset token: %w", err)
+	}
+
+	// Store token in user model
+	user.PasswordResetToken = token
+	user.PasswordResetExpires = time.Now().Add(time.Hour * 24) // Token expires in 24 hours
+	if err := s.userRepo.Update(ctx, user); err != nil {
+		return nil, fmt.Errorf("failed to update user with password reset token: %w", err)
+	}
+
+	// Send signup email
+	go func() {
+		data := map[string]interface{}{
+			"FirstName": user.FirstName,
+			"Link":      fmt.Sprintf("%s/set-password?token=%s", s.cfg.FrontendURL, token),
+		}
+		if err := s.emailService.SendEmail(user.Email, "Welcome to CCI Member Portal, Set Your Password", "signup.html", data); err != nil {
+			// Log the error, but don't block the registration process
+			fmt.Printf("failed to send signup email: %v\n", err)
+		}
+	}()
+
 	return &dto.CompleteRegisterResponse{
 		UserID:                       user.UserID,
 		FirstName:                    user.FirstName,
@@ -181,6 +212,48 @@ func (s *AuthService) CompleteRegister(ctx context.Context, req *dto.CompleteReg
 		EmergencyContactEmail:        user.EmergencyContactEmail,
 		EmergencyContactRelationship: user.EmergencyContactRelationship,
 	}, nil
+}
+
+func (s *AuthService) SetPassword(ctx context.Context, req *dto.SetPasswordRequest) error {
+	// Get user by password reset token
+	user, err := s.userRepo.GetByPasswordResetToken(ctx, req.Token)
+	if err != nil {
+		return fmt.Errorf("failed to get user by password reset token: %w", err)
+	}
+	if user == nil {
+		return errors.New("invalid or expired token")
+	}
+
+	// Check if token has expired
+	if time.Now().After(user.PasswordResetExpires) {
+		return errors.New("token has expired")
+	}
+
+	// Validate password strength
+	if !utils.IsValidPassword(req.Password) {
+		return errors.New("password must be at least 8 characters long and contain uppercase, lowercase, and number")
+	}
+
+	// Check if passwords match
+	if req.Password != req.ConfirmPassword {
+		return errors.New("passwords do not match")
+	}
+
+	// Hash new password
+	hashedPassword, err := utils.HashPassword(req.Password)
+	if err != nil {
+		return fmt.Errorf("failed to hash password: %w", err)
+	}
+
+	// Update user's password
+	user.Password = hashedPassword
+	user.PasswordResetToken = ""
+	user.PasswordResetExpires = time.Time{}
+	if err := s.userRepo.Update(ctx, user); err != nil {
+		return fmt.Errorf("failed to update password: %w", err)
+	}
+
+	return nil
 }
 
 func (s *AuthService) Login(ctx context.Context, req *dto.LoginRequest) (*dto.LoginResponse, error) {

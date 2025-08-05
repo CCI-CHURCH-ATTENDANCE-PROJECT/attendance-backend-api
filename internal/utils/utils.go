@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"church-attendance-api/internal/dto"
+	"cci-api/internal/dto"
 
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
@@ -67,7 +67,7 @@ func GenerateJWT(userID, email string, admin bool, secret string, expiry time.Du
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(expiry)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
-			Issuer:    "church-attendance-api",
+			Issuer:    "cci-api",
 		},
 	}
 

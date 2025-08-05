@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"church-attendance-api/internal/dto"
-	"church-attendance-api/internal/service"
+	"cci-api/internal/dto"
+	"cci-api/internal/service"
 
 	"github.com/labstack/echo/v4"
 )
@@ -82,7 +82,7 @@ func (h *AuthHandler) CompleteRegister(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, dto.APIResponse{
 			Success: false,
 			Error: &dto.ErrorInfo{
-				Code:    "INVALID_REQUEST",
+				Code: "INVALID_REQUEST",
 				// Message: "Invalid request body",
 				Message: err.Error(),
 			},
@@ -216,6 +216,48 @@ func (h *AuthHandler) RefreshToken(c echo.Context) error {
 	return c.JSON(http.StatusOK, dto.APIResponse{
 		Success: true,
 		Data:    resp,
+	})
+}
+
+func (h *AuthHandler) SetPassword(c echo.Context) error {
+	var req dto.SetPasswordRequest
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, dto.APIResponse{
+			Success: false,
+			Error: &dto.ErrorInfo{
+				Code:    "INVALID_REQUEST",
+				Message: "Invalid request body",
+			},
+		})
+	}
+
+	// Validate request
+	if err := c.Validate(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, dto.APIResponse{
+			Success: false,
+			Error: &dto.ErrorInfo{
+				Code:    "VALIDATION_ERROR",
+				Message: "Validation failed",
+				Details: []dto.ErrorDetail{
+					{Field: "request", Message: err.Error()},
+				},
+			},
+		})
+	}
+
+	if err := h.authService.SetPassword(c.Request().Context(), &req); err != nil {
+		return c.JSON(http.StatusBadRequest, dto.APIResponse{
+			Success: false,
+			Error: &dto.ErrorInfo{
+				Code:    "SET_PASSWORD_FAILED",
+				Message: err.Error(),
+			},
+		})
+	}
+
+	return c.JSON(http.StatusOK, dto.APIResponse{
+		Success: true,
+		Message: "Your new Password has been set successfully",
 	})
 }
 

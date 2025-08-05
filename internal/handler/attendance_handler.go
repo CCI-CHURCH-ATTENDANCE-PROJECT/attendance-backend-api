@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"time"
 
-	"church-attendance-api/internal/dto"
-	"church-attendance-api/internal/service"
-	"church-attendance-api/internal/utils"
+	"cci-api/internal/dto"
+	"cci-api/internal/service"
+	"cci-api/internal/utils"
 
 	"github.com/labstack/echo/v4"
 )
