@@ -17,6 +17,9 @@ type Config struct {
 	DBUser     string
 	DBPassword string
 
+	// DB Uri
+	DB_URI string
+
 	// JWT
 	JWTSecret        string
 	JWTAccessExpiry  time.Duration
@@ -71,21 +74,22 @@ func Load() *Config {
 	}
 
 	return &Config{
-		DBHost:           getEnv("DB_HOST", "localhost"),
-		DBPort:           getEnv("DB_PORT", "27017"),
-		DBName:           getEnv("DB_NAME", "church_attendance_db"),
-		DBUser:           getEnv("DB_USER", ""),
-		DBPassword:       getEnv("DB_PASSWORD", ""),
-		JWTSecret:        getEnv("JWT_SECRET", "your-super-secret-jwt-key-change-this-in-production"),
-		JWTAccessExpiry:  accessExpiry,
-		JWTRefreshExpiry: refreshExpiry,
-		Port:             getEnv("PORT", "8080"),
-		Env:              getEnv("ENV", "development"),
-		CORSOrigins:      getEnv("CORS_ORIGINS", "http://localhost:3000,http://localhost:8080"),
-		QRCodeSize:       256,
-		Timezone:         getEnv("TIMEZONE", "Africa/Lagos"),
-		ResendAPIKey:     getEnv("RESEND_API_KEY", ""),
-		ResendFrom:       getEnv("RESEND_FROM", ""),
+		DB_URI:                     getEnv("DB_URI", ""),
+		DBHost:                     getEnv("DB_HOST", "localhost"),
+		DBPort:                     getEnv("DB_PORT", "27017"),
+		DBName:                     getEnv("DB_NAME", "church_attendance_db"),
+		DBUser:                     getEnv("DB_USER", ""),
+		DBPassword:                 getEnv("DB_PASSWORD", ""),
+		JWTSecret:                  getEnv("JWT_SECRET", "your-super-secret-jwt-key-change-this-in-production"),
+		JWTAccessExpiry:            accessExpiry,
+		JWTRefreshExpiry:           refreshExpiry,
+		Port:                       getEnv("PORT", "8080"),
+		Env:                        getEnv("ENV", "development"),
+		CORSOrigins:                getEnv("CORS_ORIGINS", "http://localhost:3000,http://localhost:8080"),
+		QRCodeSize:                 256,
+		Timezone:                   getEnv("TIMEZONE", "Africa/Lagos"),
+		ResendAPIKey:               getEnv("RESEND_API_KEY", ""),
+		ResendFrom:                 getEnv("RESEND_FROM", ""),
 		ResendCc:                   getEnvAsSlice("RESEND_CC", []string{}),
 		ResendBcc:                  getEnvAsSlice("RESEND_BCC", []string{}),
 		FrontendURL:                getEnv("FRONTEND_URL", "http://localhost:3000"),
