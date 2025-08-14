@@ -22,14 +22,25 @@ func NewConnection(cfg *config.Config) (*Database, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	// Build connection URI
 	var uri string
-	if cfg.DBUser != "" && cfg.DBPassword != "" {
-		uri = fmt.Sprintf("mongodb://%s:%s@%s:%s/%s",
-			cfg.DBUser, cfg.DBPassword, cfg.DBHost, cfg.DBPort, cfg.DBName)
+	// Use DB_URI to connect to the db if it is in the .env, else build connection URI
+	if cfg.DB_URI != "" {
+		uri = cfg.DB_URI
 	} else {
-		uri = fmt.Sprintf("mongodb://%s:%s", cfg.DBHost, cfg.DBPort)
+		if cfg.DBHost == "" || cfg.DBPort == "" || cfg.DBName == "" {
+			return nil, fmt.Errorf("db_host, db_port, and db_name must be set in the configuration for they are required")
+		}
+		// Build connection URI
+		if cfg.DBUser != "" && cfg.DBPassword != "" {
+			uri = fmt.Sprintf("mongodb://%s:%s@%s:%s/%s",
+				cfg.DBUser, cfg.DBPassword, cfg.DBHost, cfg.DBPort, cfg.DBName)
+		} else {
+			uri = fmt.Sprintf("mongodb://%s:%s", cfg.DBHost, cfg.DBPort)
+		}
 	}
+
+
+
 
 	// Set client options
 	clientOptions := options.Client().ApplyURI(uri)
