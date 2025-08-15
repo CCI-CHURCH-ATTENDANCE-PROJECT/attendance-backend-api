@@ -1,14 +1,27 @@
-ARG GO_VERSION=1
-FROM golang:${GO_VERSION}-bookworm as builder
+# Build stage
+ARG GO_VERSION=1.22
+FROM golang:${GO_VERSION}-bookworm AS builder
 
-WORKDIR /usr/src/app
+WORKDIR /app
+
+# Cache dependencies
 COPY go.mod go.sum ./
 RUN go mod download && go mod verify
+
+# Copy source code
 COPY . .
-RUN go build -v -o /run-app .
 
+# Build statically linked binary
+RUN CGO_ENABLED=0 GOOS=linux go build -o server .
 
-FROM debian:bookworm
+# Final stage
+FROM debian:bookworm-slim
 
-COPY --from=builder /run-app /usr/local/bin/
-CMD ["run-app"]
+# Copy binary
+COPY --from=builder /app/server /usr/local/bin/server
+
+# Expose app port
+EXPOSE 8080
+
+# Start app
+CMD ["server"]

@@ -1,53 +1,52 @@
-# flyctl launch added from .gitignore
-# Binaries for programs and plugins
+# Go build artifacts
 **/*.exe
 **/*.exe~
 **/*.dll
 **/*.so
 **/*.dylib
-
-# Test binary, built with `go test -c`
 **/*.test
-
-# Output of the go coverage tool, specifically when used with LiteIDE
 **/*.out
-
-# Dependency directories (remove the comment below to include it)
-# vendor/
-
-# Go workspace file
 **/go.work
 
+# Built binaries
+/run-app
+/server
+
+# Dependency directories
+vendor/
+
 # Environment files
-**/.env
+.env
 
 # IDE files
-**/.vscode
-**/.idea
-**/*.swp
-**/*.swo
-**/*~
+.vscode
+.idea
+*.swp
+*.swo
+*~
 
 # OS generated files
-**/.DS_Store
-**/.DS_Store?
-**/._*
-**/.Spotlight-V100
-**/.Trashes
-**/ehthumbs.db
-**/Thumbs.db
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
 # Log files
-**/*.log
+*.log
 
-# Build directories
-**/build
-**/dist
+# Build output directories
+build/
+dist/
+tmp/
+temp/
 
-# Temporary files
-**/tmp
-**/temp
+# Amazon Q files
+.amazonq
 
-# Amazon q files
-**/.amazonq
+# Fly.io config
 fly.toml
+
+
