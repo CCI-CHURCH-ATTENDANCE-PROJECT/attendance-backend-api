@@ -17,6 +17,9 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o server .
 # Final stage
 FROM debian:bookworm-slim
 
+# Install CA certificates so TLS works with MongoDB Atlas
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates && rm -rf /var/lib/apt/lists/*
+
 # Copy binary
 COPY --from=builder /app/server /usr/local/bin/server
 
